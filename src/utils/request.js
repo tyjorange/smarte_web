@@ -31,14 +31,15 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    if (res.code === 401) {
+    console.log('request.js', res)
+    if (res.status === 401) {
       Message({
-        message: res.msg,
+        message: res.statusText,
         type: 'error',
         duration: 5 * 1000
       })
       return Promise.reject('code 401')
-    } else if (res.code === 403) {
+    } else if (res.status === 403) {
       MessageBox.confirm(
         '你已被登出，可以取消继续留在该页面，或者重新登录',
         '确定登出', {
@@ -52,7 +53,7 @@ service.interceptors.response.use(
         })
       })
       Message({
-        message: res.msg,
+        message: res.statusText,
         type: 'error',
         duration: 5 * 1000
       })

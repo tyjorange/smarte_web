@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { API_GetCollectors } from '@/api/record/energyStructure'
+import { API_GetCollectors } from '../api.js'
 
 export default {
   data() {
@@ -76,11 +76,11 @@ export default {
           this.collectorList = response.data // 下拉树数据
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     onSubmit() {
-      console.log('submit!')
+      // console.log('submit!')
     }
   }
 }

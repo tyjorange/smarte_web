@@ -123,8 +123,7 @@
 
 <script>
 
-import { API_GetCollectors } from '@/api/monitor/realdata'
-import { API_GradeTime } from '@/api/statistics/gradeTime'
+import { API_GetCollectors, API_GradeTime } from './api.js'
 // import { getNowFormatDate } from '@/utils/index'
 
 const data = () => {
@@ -171,7 +170,7 @@ export default {
           this.opt1 = response.data // 下拉菜单数据
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     onSubmit() {
@@ -195,7 +194,7 @@ export default {
           this.tableData = response.data.tableData // 手动更新列表值
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     toFixed(row, column, cellValue, index) {

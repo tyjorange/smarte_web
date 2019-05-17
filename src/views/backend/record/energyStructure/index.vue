@@ -68,7 +68,7 @@ import {
   API_GetCollectorTree,
   API_getAllSwitchs,
   API_GetSwitchs
-} from '@/api/record/energyStructure'
+} from './api.js'
 
 import switchInfo from './components/SwitchInfo'
 
@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     handleNodeClick(data) {
-      console.log(data)
+      // console.log(data)
     },
     init() {
       API_GetCollectorTree(this.$store.getters.token)
@@ -139,7 +139,7 @@ export default {
           this.collectorList = response.data // 下拉树数据
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
 
       API_getAllSwitchs(this.$store.getters.token)
@@ -147,7 +147,7 @@ export default {
           this.tableData = response.data // 右边表格数据
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     getSwiths(data) {
@@ -156,7 +156,7 @@ export default {
           this.tableData = response.data // 右边表格数据
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     formatState(row, column, cellValue, index) {

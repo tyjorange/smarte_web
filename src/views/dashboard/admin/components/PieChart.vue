@@ -11,7 +11,7 @@
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
-import { API_GetPieChartData } from '@/api/dashboard'
+import { API_GetPieChartData } from '../../api.js'
 const demoChartData = {
   t1: [
     { value: 320, name: '动力' },
@@ -141,7 +141,7 @@ export default {
           loading.close()
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     }
   }

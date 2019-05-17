@@ -38,7 +38,7 @@ export default {
       })
       const first = matched[0]
       if (first && first.name.trim().toLocaleLowerCase() !== 'Dashboard'.toLocaleLowerCase()) {
-        matched = [{ path: '/dashboard', meta: { title: 'dashboard' }}].concat(matched)
+        matched = [{ path: '/Dashboard', meta: { title: 'Dashboard' }}].concat(matched)
       }
       this.levelList = matched
     },
@@ -67,7 +67,7 @@ export default {
     line-height: 50px;
     margin-left: 10px;
     .no-redirect {
-      color: #97a8be;
+      color: #ffffff;
       cursor: text;
     }
   }

@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { API_PointUsed } from '@/api/monitor/pointused'
+import { API_PointUsed } from '../api.js'
 import { formatTime } from '@/utils/index'
 const itemOptions1 = [
   { id: 'wgdl', name: '无功电量' },
@@ -160,7 +160,7 @@ export default {
             this.tableData = response.data // 监听右表变化更新左表值
           })
           .catch(error => {
-            console.log(error)
+            console.error(error)
           })
       }
     }
@@ -200,7 +200,7 @@ export default {
             }
           })
           .catch(error => {
-            console.log(error)
+            console.error(error)
           })
       }
     },

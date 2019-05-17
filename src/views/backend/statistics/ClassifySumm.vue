@@ -61,7 +61,7 @@
       <div slot="header" class="clearfix" style="text-align: left;">
         <span style="color:#2DC3D0;"><i class="el-icon-info"/> <b>能耗分类汇总统计表</b> </span>
       </div>
-      <div class="text item">
+      <div class="text text-item">
         <el-table :data="summData" style="width: 100%; margin-top: 20px" stripe border align="center">
           <el-table-column label="能源种类" prop="energyType" style="height:50px"/>
           <el-table-column label="实物量" prop="converting" style="height:50px"/>

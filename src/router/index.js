@@ -66,13 +66,13 @@ export const constantRouterMap = [
   {
     path: '',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/Dashboard',
     children: [
       {
-        path: '/dashboard',
+        path: '/Dashboard',
         component: () => import('@/views/dashboard/index'),
-        name: 'dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+        name: 'Dashboard',
+        meta: { title: 'Dashboard', icon: 'dashboard', noCache: true }
       }
     ]
   }
@@ -90,25 +90,31 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: '/ElectricBox',
     name: 'DeviceManagement',
-    meta: { title: '设备管理', icon: 'example' },
+    meta: { title: 'DeviceManagement', icon: 'example' },
     children: [
       {
         path: '/electricBox',
         name: 'ElectricBox',
         component: () => import('@/views/client/deviceManagement/electricBox/index.vue'),
-        meta: { title: '我的电箱', icon: 'example' }
-      },
-      {
-        path: '/shareElectricBox',
-        name: 'ShareElectricBox',
-        component: () => import('@/views/client/deviceManagement/shareElectricBox/index.vue'),
-        meta: { title: '共享给我的电箱', icon: 'example' }
+        meta: { title: 'ElectricBox', icon: 'example' }
       },
       {
         path: '/myShare',
         name: 'MyShare',
         component: () => import('@/views/client/deviceManagement/myShare/index.vue'),
-        meta: { title: '我的共享', icon: 'example' }
+        meta: { title: 'MyShare', icon: 'example' }
+      },
+      {
+        path: '/scene',
+        name: 'Scene',
+        component: () => import('@/views/client/deviceManagement/scene/index.vue'),
+        meta: { title: 'Scene', icon: 'example' }
+      },
+      {
+        path: '/timingTask',
+        name: 'TimingTask',
+        component: () => import('@/views/client/deviceManagement/timingTask/index.vue'),
+        meta: { title: 'TimingTask', icon: 'example' }
       }
     ]
   },
@@ -117,25 +123,25 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: '/electricityDailyIndex',
     name: 'AppStatistics',
-    meta: { title: '统计', icon: 'tree' },
+    meta: { title: 'AppStatistics', icon: 'tree' },
     children: [
       {
         path: '/electricityDailyIndex',
         name: 'ElectricityDailyIndex',
         component: () => import('@/views/client/appStatistics/electricityDailyIndex/index.vue'),
-        meta: { title: '电力日指标', icon: 'tree' }
+        meta: { title: 'ElectricityDailyIndex', icon: 'tree' }
       },
       {
         path: '/electricityMonthlyIndex',
         name: 'ElectricityMonthlyIndex',
         component: () => import('@/views/client/appStatistics/electricityMonthlyIndex/index.vue'),
-        meta: { title: '电力月指标', icon: 'tree' }
+        meta: { title: 'ElectricityMonthlyIndex', icon: 'tree' }
       },
       {
         path: '/electricityFees',
         name: 'ElectricityFees',
         component: () => import('@/views/client/appStatistics/electricityFees/index.vue'),
-        meta: { title: '电费', icon: 'tree' }
+        meta: { title: 'ElectricityFees', icon: 'tree' }
       }
     ]
   },
@@ -144,19 +150,19 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: '/alarmInformation',
     name: 'LogBook',
-    meta: { title: '日志', icon: 'nested' },
+    meta: { title: 'LogBook', icon: 'nested' },
     children: [
       {
         path: '/alarmInformation',
         name: 'AlarmInformation',
         component: () => import('@/views/client/logBook/alarmInformation/index.vue'),
-        meta: { title: '告警信息', icon: 'nested' }
+        meta: { title: 'AlarmInformation', icon: 'nested' }
       },
       {
         path: '/logInformation',
         name: 'LogInformation',
         component: () => import('@/views/client/logBook/logInformation/index.vue'),
-        meta: { title: '日志信息', icon: 'nested' }
+        meta: { title: 'LogInformation', icon: 'nested' }
       }
     ]
   },
@@ -245,7 +251,7 @@ export const asyncRouterMap = [
     children: [{
       path: '/powerFactor',
       name: 'PowerFactor',
-      component: () => import('@/views/backend/form/index'),
+      component: () => import('@/views/backend/quality/powerFactor/index'),
       meta: {
         title: 'PowerFactor',
         icon: 'guide'
@@ -254,7 +260,7 @@ export const asyncRouterMap = [
     {
       path: '/loadRate',
       name: 'LoadRate',
-      component: () => import('@/views/backend/form/index'),
+      component: () => import('@/views/backend/quality/loadRate/index'),
       meta: {
         title: 'LoadRate',
         icon: 'eye'
@@ -262,7 +268,7 @@ export const asyncRouterMap = [
     }, {
       path: '/pointCurve',
       name: 'PointCurve',
-      component: () => import('@/views/backend/form/index'),
+      component: () => import('@/views/backend/quality/pointCurve/index'),
       meta: {
         title: 'PointCurve',
         icon: 'clipboard'
@@ -270,7 +276,7 @@ export const asyncRouterMap = [
     }, {
       path: '/unbalanceRate',
       name: 'UnbalanceRate',
-      component: () => import('@/views/backend/form/index'),
+      component: () => import('@/views/backend/quality/unbalanceRate/index'),
       meta: {
         title: 'UnbalanceRate',
         icon: 'drag'
@@ -278,7 +284,7 @@ export const asyncRouterMap = [
     }, {
       path: '/balanceReport',
       name: 'BalanceReport',
-      component: () => import('@/views/backend/form/index'),
+      component: () => import('@/views/backend/quality/balanceReport/index'),
       meta: {
         title: 'BalanceReport',
         icon: 'nested'
@@ -286,7 +292,7 @@ export const asyncRouterMap = [
     }, {
       path: '/alarmRecord',
       name: 'AlarmRecord',
-      component: () => import('@/views/backend/form/index'),
+      component: () => import('@/views/backend/quality/alarmRecord/index'),
       meta: {
         title: 'AlarmRecord',
         icon: 'tab'

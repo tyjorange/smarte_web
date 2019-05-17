@@ -22,7 +22,7 @@
 
 <script>
 import calendar from '@/components/Calendar'
-import { API_GetCalendarData } from '@/api/dashboard'
+import { API_GetCalendarData } from '../../api.js'
 export default {
   components: {
     calendar
@@ -51,7 +51,7 @@ export default {
           loading.close()
         })
         .catch(error => {
-          console.log(error)
+          console.error(error)
         })
     },
     clickDay(data) {

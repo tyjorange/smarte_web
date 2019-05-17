@@ -12,15 +12,15 @@
           <screenfull class="screenfull right-menu-item"/>
         </el-tooltip>
 
-        <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
-          <size-select class="international right-menu-item"/>
-        </el-tooltip>
+        <!--<el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">-->
+        <!--<size-select class="international right-menu-item"/>-->
+        <!--</el-tooltip>-->
 
         <lang-select class="international right-menu-item"/>
 
-        <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
-          <theme-picker class="theme-switch right-menu-item"/>
-        </el-tooltip>
+        <!--<el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">-->
+        <!--<theme-picker class="theme-switch right-menu-item"/>-->
+        <!--</el-tooltip>-->
       </template>
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
@@ -34,11 +34,11 @@
               {{ $t('navbar.dashboard') }}
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>
-              {{ $t('navbar.github') }}
-            </el-dropdown-item>
-          </a>
+          <!--<a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">-->
+          <!--<el-dropdown-item>-->
+          <!--{{ $t('navbar.github') }}-->
+          <!--</el-dropdown-item>-->
+          <!--</a>-->
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">{{ $t('navbar.logOut') }}</span>
           </el-dropdown-item>
@@ -81,9 +81,13 @@ export default {
       this.$store.dispatch('toggleSideBar')
     },
     logout() {
-      this.$store.dispatch('LogOut').then(() => {
-        location.reload()// In order to re-instantiate the vue-router object to avoid bugs
-      })
+      this.$confirm('退出登录？')
+        .then(_ => {
+          this.$store.dispatch('LogOut').then(() => {
+            location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+          })
+        })
+        .catch(_ => {})
     }
   }
 }
@@ -91,16 +95,19 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 75px;
   line-height: 50px;
   border-radius: 0px !important;
+  background: url(../../../assets/dyyd.jpg);
   .hamburger-container {
+    margin: 10px;
     line-height: 58px;
     height: 50px;
     float: left;
     padding: 0 10px;
   }
   .breadcrumb-container{
+    margin-top: 10px;
     float: left;
   }
   .errLog-container {
@@ -108,8 +115,9 @@ export default {
     vertical-align: top;
   }
   .right-menu {
+    margin-top: 10px;
     float: right;
-    height: 100%;
+    height: 80%;
     &:focus{
      outline: none;
     }

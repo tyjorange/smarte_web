@@ -70,7 +70,7 @@
       <div slot="header" class="clearfix" style="text-align: left;">
         <span style="color:#2DC3D0;"><i class="el-icon-info"/> <b>分类分时能耗统计报表</b> </span>
       </div>
-      <div class="text item">
+      <div class="text text-item">
         <el-table :data="rows.tableData1" style="width: 100%; margin-top: 20px" stripe border highlight-current-row align="center">
           <el-table-column label="能源种类" prop="energyType" style="height:50px"/>
           <el-table-column label="计量单位" prop="unit" style="height:50px;" width="100px"/>
@@ -93,7 +93,7 @@
       <div slot="header" class="clearfix" style="text-align: left;">
         <span style="color:#2DC3D0;"><i class="el-icon-info"/> <b>分项分时能耗统计报表</b> </span>
       </div>
-      <div class="text item">
+      <div class="text text-item">
         <el-table :data="rows.tableData2" style="width: 100%; margin-top: 20px" stripe border highlight-current-row align="center">
           <el-table-column label="能源分项" prop="energySector" style="height:50px"/>
           <el-table-column width="800" label="2018-12">

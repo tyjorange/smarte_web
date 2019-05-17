@@ -37,15 +37,18 @@
                 </el-radio-group>
               </template>
             </el-form-item>
-            <el-checkbox :indeterminate="isIndeterminate1" v-model="checkAll1" @change="handleCheckAllChange1">电量：</el-checkbox>
+            <el-checkbox :indeterminate="isIndeterminate1" v-model="checkAll1" @change="handleCheckAllChange1">电量：
+            </el-checkbox>
             <el-checkbox-group v-model="checkedItem1" size="mini" @change="handleCheckedItemChange1">
               <el-checkbox v-for="item in Items1" :key="item.id" :label="item" border>{{ item.name }}</el-checkbox>
             </el-checkbox-group>
-            <el-checkbox :indeterminate="isIndeterminate2" v-model="checkAll2" @change="handleCheckAllChange2">功率：</el-checkbox>
+            <el-checkbox :indeterminate="isIndeterminate2" v-model="checkAll2" @change="handleCheckAllChange2">功率：
+            </el-checkbox>
             <el-checkbox-group v-model="checkedItem2" size="mini" @change="handleCheckedItemChange2">
               <el-checkbox v-for="item in Items2" :key="item.id" :label="item" border>{{ item.name }}</el-checkbox>
             </el-checkbox-group>
-            <el-checkbox :indeterminate="isIndeterminate3" v-model="checkAll3" @change="handleCheckAllChange3">其他：</el-checkbox>
+            <el-checkbox :indeterminate="isIndeterminate3" v-model="checkAll3" @change="handleCheckAllChange3">其他：
+            </el-checkbox>
             <el-checkbox-group v-model="checkedItem3" size="mini" @change="handleCheckedItemChange3">
               <el-checkbox v-for="item in Items3" :key="item.id" :label="item" border>{{ item.name }}</el-checkbox>
             </el-checkbox-group>
@@ -80,8 +83,9 @@
 </template>
 
 <script>
-import { API_GetSignals } from '@/api/monitor/realdata'
+import { API_GetSignals } from '../api.js'
 import { formatTime } from '@/utils/index'
+
 const itemOptions1 = [
   { id: 'wgdl', name: '无功电量' },
   { id: 'ygdl', name: '有功电量' }
@@ -168,7 +172,7 @@ export default {
             this.tableData = response.data // 监听右表变化更新左表值
           })
           .catch(error => {
-            console.log(error)
+            console.error(error)
           })
       }
     }
@@ -212,7 +216,7 @@ export default {
             }
           })
           .catch(error => {
-            console.log(error)
+            console.error(error)
           })
       }
     },
@@ -232,19 +236,19 @@ export default {
       const checkedCount = value.length
       this.checkAll1 = checkedCount === this.Items1.length
       this.isIndeterminate1 =
-        checkedCount > 0 && checkedCount < this.Items1.length
+          checkedCount > 0 && checkedCount < this.Items1.length
     },
     handleCheckedItemChange2(value) {
       const checkedCount = value.length
       this.checkAll2 = checkedCount === this.Items2.length
       this.isIndeterminate2 =
-        checkedCount > 0 && checkedCount < this.Items2.length
+          checkedCount > 0 && checkedCount < this.Items2.length
     },
     handleCheckedItemChange3(value) {
       const checkedCount = value.length
       this.checkAll3 = checkedCount === this.Items3.length
       this.isIndeterminate3 =
-        checkedCount > 0 && checkedCount < this.Items3.length
+          checkedCount > 0 && checkedCount < this.Items3.length
     },
     cellRender(row, column, cellValue, index) {
       return formatTime(cellValue)
@@ -260,20 +264,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-div {
-  margin: 3px;
-  margin-right: 0px;
-}
-.el-form-item {
-  margin: 0px;
-}
-.groupbt {
-  float: right;
-  margin-right: 5px;
-  margin-top: 10px;
-}
-.el-table {
-  width: 100%;
-  margin-top: 12px;
-}
+  div {
+    margin: 3px;
+    margin-right: 0px;
+  }
+
+  .el-form-item {
+    margin: 0px;
+  }
+
+  .groupbt {
+    float: right;
+    margin-right: 5px;
+    margin-top: 10px;
+  }
+
+  .el-table {
+    width: 100%;
+    margin-top: 12px;
+  }
 </style>

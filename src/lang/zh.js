@@ -1,7 +1,20 @@
 export default {
   route: {
-    Dashboard: '低压用电智能云平台',
-    dashboard: '低压用电智能云平台',
+    Dashboard: '首页',
+    // client
+    DeviceManagement: '设备管理',
+    ElectricBox: '我的电箱',
+    MyShare: '我的共享',
+    Scene: '场景',
+    TimingTask: '定时任务',
+    AppStatistics: '统计',
+    ElectricityDailyIndex: '电力日指标',
+    ElectricityMonthlyIndex: '电力月指标',
+    ElectricityFees: '电费',
+    LogBook: '日志',
+    AlarmInformation: '告警信息',
+    LogInformation: '日志信息',
+    // backend
     Example: '演示',
     Monitor: '数据监测',
     RealData: '实时数据',
@@ -31,7 +44,7 @@ export default {
     AlarmParam: '告警参数',
     WebSystem: '用户中心',
     AccountManageInit: '用户管理',
-    //
+    // default
     introduction: '简述',
     documentation: '文档',
     guide: '引导页',

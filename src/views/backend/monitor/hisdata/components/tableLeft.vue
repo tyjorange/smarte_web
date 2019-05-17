@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { API_GetSignalsHis } from '@/api/monitor/hisdata'
+import { API_GetSignalsHis } from '../api.js'
 import { formatTime } from '@/utils/index'
 import Pagination from '@/components/Pagination'
 import lineChartDialog from './LineChartDialog'
@@ -308,7 +308,7 @@ export default {
             }
           })
           .catch(error => {
-            console.log(error)
+            console.error(error)
           })
       }
     },

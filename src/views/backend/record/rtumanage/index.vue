@@ -143,7 +143,7 @@ export default {
     }
   },
   methods: {
-    handleEdit(index, row) {
+    handleEditInfo(index, row) {
       this.dialogFormVisible = true
       console.log(index, row)
     },

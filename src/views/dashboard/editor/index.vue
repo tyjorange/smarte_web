@@ -11,7 +11,7 @@
       </div>
     </div>
     <div>
-      <img :src="emptyGif" class="emptyGif">
+      <!--<img :src="emptyGif" class="emptyGif">-->
     </div>
   </div>
 </template>
@@ -47,7 +47,7 @@ export default {
   }
 
   .dashboard-editor-container {
-    background-color: #e3e3e3;
+    background: url(../../../assets/main.jpg) no-repeat fixed;
     min-height: 100vh;
     padding: 50px 60px 0px;
     .pan-info-roles {

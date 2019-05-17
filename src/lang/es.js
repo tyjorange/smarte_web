@@ -1,6 +1,20 @@
 export default {
   route: {
-    dashboard: 'Panel de control',
+    dashboard: 'Tablero de instrumentos',
+    // client
+    DeviceManagement: 'Device Management',
+    ElectricBox: 'Caja electrica',
+    Scene: 'Compartir caja electrica',
+    TimingTask: 'TimingTask',
+    MyShare: 'De mi parte',
+    AppStatistics: 'App estadísticas',
+    ElectricityDailyIndex: 'Electricidad Índice diario',
+    ElectricityMonthlyIndex: 'Electricidad mes Índice',
+    ElectricityFees: 'Tarifas de electricidad',
+    LogBook: 'Libro de registro',
+    AlarmInformation: 'La información de alarma',
+    LogInformation: 'Información de registro',
+    // backend
     Example: 'Ejemplo',
     Monitor: 'Monitor',
     RealData: 'Realmente datos',

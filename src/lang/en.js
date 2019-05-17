@@ -1,6 +1,20 @@
 export default {
   route: {
     dashboard: 'Dashboard',
+    // client
+    DeviceManagement: 'DeviceManagement',
+    ElectricBox: 'ElectricBox',
+    MyShare: 'MyShare',
+    Scene: 'Scene',
+    TimingTask: 'TimingTask',
+    AppStatistics: 'AppStatistics',
+    ElectricityDailyIndex: 'ElectricityDailyIndex',
+    ElectricityMonthlyIndex: 'ElectricityMonthlyIndex',
+    ElectricityFees: 'ElectricityFees',
+    LogBook: 'LogBook',
+    AlarmInformation: 'AlarmInformation',
+    LogInformation: 'LogInformation',
+    // backend
     Example: 'Example',
     Monitor: 'Monitor',
     RealData: 'ReallyData',

@@ -15,7 +15,7 @@
 
 <script>
 import tableLeft from './components/tableLeft'
-import tableRight from '@/views/backend/monitor/tableRight'
+import tableRight from './components/tableRight'
 export default {
   components: { tableLeft, tableRight }
 }

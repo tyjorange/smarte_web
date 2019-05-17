@@ -73,7 +73,7 @@
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import { debounce, parseTime } from '@/utils'
-import { API_GetSignalsHis } from '@/api/monitor/hisdata'
+import { API_GetSignalsHis } from '../api.js'
 import { formatTime } from '@/utils/index'
 import Pagination from '@/components/Pagination'
 
@@ -341,7 +341,7 @@ export default {
             }
           })
           .catch(error => {
-            console.log(error)
+            console.error(error)
           })
       }
     },

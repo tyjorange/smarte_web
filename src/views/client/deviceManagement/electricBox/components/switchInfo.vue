@@ -28,15 +28,44 @@
         </el-col>
         <el-col :span="12">
           <div class="grid-content bg-purple-light"/>
-          <el-row>设备编码 {{ switchCode }}</el-row>
-          <el-row>累计用电</el-row>
-          <el-row>当月用电</el-row>
-          <el-row>当月无功电量</el-row>
-          <el-row>功率因数</el-row>
-          <el-row>温度</el-row>
-          <el-row>无功电量</el-row>
-          <el-row>无功功率</el-row>
-          <el-row>有功功率</el-row>
+          <el-form :label-position="labelPosition" :model="formLabelAlign" label-width="120px">
+            <el-form-item label="设备编码：">
+              <span class="demonstration">{{ switchCode }}</span>
+              <el-tag type="success">正常</el-tag>
+            </el-form-item>
+            <el-form-item label="累计用电：">
+              <span class="demonstration">110 kw/h</span>
+              <el-tag type="success">正常</el-tag>
+            </el-form-item>
+            <el-form-item label="当月用电：">
+              <span class="demonstration">10 kw/h</span>
+              <el-tag type="success">正常</el-tag>
+            </el-form-item>
+            <el-form-item label="当月无功电量：">
+              <span class="demonstration">12 kvarh</span>
+              <el-tag type="success">正常</el-tag>
+            </el-form-item>
+            <el-form-item label="功率因数：">
+              <span class="demonstration">1.0</span>
+              <el-tag type="success">正常</el-tag>
+            </el-form-item>
+            <el-form-item label="温度：">
+              <span class="demonstration">32 ℃</span>
+              <el-tag type="success">正常</el-tag>
+            </el-form-item>
+            <el-form-item label="无功电量：">
+              <span class="demonstration">3 kvarh</span>
+              <el-tag type="success">正常</el-tag>
+            </el-form-item>
+            <el-form-item label="无功功率：">
+              <span class="demonstration">6 kvar</span>
+              <el-tag type="success">正常</el-tag>
+            </el-form-item>
+            <el-form-item label="有功功率：">
+              <span class="demonstration">0.09 kw</span>
+              <el-tag type="success">正常</el-tag>
+            </el-form-item>
+          </el-form>
         </el-col>
       </el-row>
     </el-tab-pane>
@@ -44,11 +73,11 @@
       <div class="block">
         <span class="demonstration">设置线路的最大承受电流，保护线路用电安全</span>
         <p/>
-        <el-radio v-model="guoliu" :label="16">16A</el-radio>
-        <el-radio v-model="guoliu" :label="20">20A</el-radio>
-        <el-radio v-model="guoliu" :label="25">25A</el-radio>
-        <el-radio v-model="guoliu" :label="32">32A</el-radio>
-        <el-radio v-model="guoliu" :label="63">63A</el-radio>
+        <el-radio v-model="guoliu" :label="16" border>16A</el-radio>
+        <el-radio v-model="guoliu" :label="20" border>20A</el-radio>
+        <el-radio v-model="guoliu" :label="25" border>25A</el-radio>
+        <el-radio v-model="guoliu" :label="32" border>32A</el-radio>
+        <el-radio v-model="guoliu" :label="63" border>63A</el-radio>
       </div>
       <el-button class="cbtn" type="primary" @click="commitSet(1)">确 定</el-button>
     </el-tab-pane>
@@ -81,7 +110,7 @@
 <script>
 export default {
   name: 'SwitchInfoComponents',
-  props: {// 父组件传值
+  props: {// 父组件传的值
     switchCode: {
       type: String,
       default: ''
@@ -98,7 +127,13 @@ export default {
       qianyaMax: 180,
       strokeWidth: 15,
       circleWidth: 120,
-      activeName: 'first'
+      activeName: 'first',
+      labelPosition: 'right',
+      formLabelAlign: {
+        name: '',
+        region: '',
+        type: ''
+      }
     }
   },
   mounted() {
@@ -141,5 +176,14 @@ export default {
 
   .block {
     margin: 5px 20px 5px 20px;
+  }
+
+  .el-form-item {
+    min-width: 300px;
+    margin-bottom: 5px;
+  }
+
+  .el-tag {
+    float: right;
   }
 </style>

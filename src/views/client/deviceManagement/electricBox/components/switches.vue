@@ -38,17 +38,20 @@
               @change="onChangeState"/>
             <el-button
               size="mini"
+              plain
               @click="handleEditInfo(scope.$index, scope.row)">
               <i class="el-icon-edit"/> 编辑
             </el-button>
             <el-button
               size="mini"
+              plain
               type="danger"
               @click="handleDelete(scope.$index, scope.row)">
               <i class="el-icon-delete"/> 删除
             </el-button>
             <el-button
               size="mini"
+              plain
               type="primary"
               @click="handleDetail(scope.$index, scope.row)">
               <i class="el-icon-document"/> 查看
@@ -56,19 +59,55 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-button slot="reference" icon="el-icon-plus" round @click="popOpen(collectorCode)"/>
+      <el-button slot="reference" icon="el-icon-plus" round @click="popToggle(collectorCode)"/>
     </el-popover>
     <!-- Form -->
-    <el-dialog :visible.sync="swithcEditVisible" title="修改线路" append-to-body>
+    <el-dialog :visible.sync="swithcEditVisible" title="修改线路" append-to-body width="600px">
       <el-form :model="switchData">
         <el-form-item label-width="120px" label="线路名称">
-          <el-input v-model="switchData.name" style="width: 450px;" auto-complete="off"/>
+          <el-input v-model="switchData.name" auto-complete="off" style="width: 370px;"/>
         </el-form-item>
         <el-form-item label-width="120px" label="线路图片">
-          <el-select v-model="switchData.icons" placeholder="请选择图片" style="width: 450px;">
-            <el-option label="图1" value="1"/>
-            <el-option label="图2" value="2"/>
-          </el-select>
+          <el-button plain class="btn1" @click="iconSelect(0)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic01@3x.png" alt="">
+            <p/>照明
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(1)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic02@3x.png" alt="">
+            <p/>客厅
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(2)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic03@3x.png" alt="">
+            <p/>主卧
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(3)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic04@3x.png" alt="">
+            <p/>卧室
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(4)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic05@3x.png" alt="">
+            <p/>书房
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(5)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic06@3x.png" alt="">
+            <p/>电脑
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(6)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic07@3x.png" alt="">
+            <p/>厨房
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(7)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic08@3x.png" alt="">
+            <p/>卫生间
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(8)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic09@3x.png" alt="">
+            <p/>空调
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(9)">
+            <img class="images_ebs" src="@/assets/xianlu/linepic10@3x.png" alt="">
+            <p/>其他
+          </el-button>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -76,12 +115,12 @@
         <el-button type="primary" @click="onSubmitInfo">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- Form -->
+    <!-- hideForm -->
     <el-dialog
       :visible.sync="switchInfoVisible"
       :close-on-click-modal="onEscClose"
       :close-on-press-escape="onEscClose"
-      title="详细信息"
+      title="数据信息"
       append-to-body
       @open="dialogOpen"
       @close="dialogClose">
@@ -97,7 +136,7 @@ import { API_getSwitchByCollector } from '../api.js'
 export default {
   name: 'SwitchComponents',
   components: { SwitchInfo },
-  props: {// 父组件传值
+  props: {// 父组件传的值
     collectorCode: {
       type: String,
       default: ''
@@ -120,6 +159,7 @@ export default {
     this.getSwitch()
   },
   methods: {
+    // 获取线路列表
     getSwitch() {
       const loading = this.$loading({
         lock: true,
@@ -132,30 +172,37 @@ export default {
         this.gridData = response.data.data
         loading.close()
       }).catch(error => {
+        loading.close()
         console.error(error)
       })
     },
+    // 打开线路详细dialog回调
     dialogOpen() {
       const self = this
       setTimeout(function() {
         self.$refs.mychild.dopen()
-      }, 500)// 等组件生成再调用dopen
+      }, 500)// 等子组件生成再调用dopen
     },
+    // 关闭线路详细dialog回调
     dialogClose() {
       const self = this
       setTimeout(function() {
         self.$refs.mychild.resetTabPane()
-      }, 500)// 等组件生成再调用resets
+      }, 500)// 等子组件生成再调用resetTabPane
     },
-    popOpen(id) {
+    // 打开、关闭pop层
+    popToggle(id) {
       this.$refs[`popover-` + id].doToggle()
     },
+    // 关闭pop层
     popClose(id) {
       this.$refs[`popover-` + id].doClose()
     },
+    // pop层渲染完成回调
     popShow() {
       this.getSwitch()
     },
+    // 开、关线路
     onChangeState(value) {
       console.log('onChangeState ' + value)
       if (value) {
@@ -164,13 +211,16 @@ export default {
         this.$message('关闭')
       }
     },
+    // 修改线路名称、图标
     onSubmitInfo() {
       this.$message('修改成功')
       this.swithcEditVisible = false
     },
+    // 打开修改线路dialog
     handleEditInfo(index, row) {
       this.swithcEditVisible = true
     },
+    // 打开删除线路dialog
     handleDelete(index, row) {
       this.$confirm('此操作解除线路绑定, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -188,9 +238,15 @@ export default {
         })
       })
     },
+    // 打开修改线路详细dialog
     handleDetail(index, row) {
       this.switchInfoVisible = true
       this.toChildVal = row.code
+    },
+    // 线路图片修改赋值
+    iconSelect(val) {
+      console.log(val)
+      this.switchData.icons = val
     }
   }
 }
@@ -201,6 +257,10 @@ export default {
     border-radius: 10px;
     height: 35px;
     width: 35px;
+  }
+
+  .el-select-dropdown__item {
+    height: 50px;
   }
 
   .el-switch {
@@ -215,5 +275,15 @@ export default {
 
   .closePop {
     float: right
+  }
+
+  .dialog-footer {
+    margin-right: 30px;
+  }
+
+  .btn1 {
+    width: 90px;
+    margin-left: 0;
+    margin-bottom: 5px;
   }
 </style>

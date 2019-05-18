@@ -7,7 +7,7 @@
       </sticky>
     </div>
     <!-- col_items -->
-    <el-row v-for="item in gridData" :key="item.id" class="col_items">
+    <el-row v-for="item in collectorData" :key="item.id" class="col_items">
       <el-col :span="1" class="col21"> <!-- switches item pop -->
         <SwitchComp :collector-code="item.code"/>
       </el-col>
@@ -52,55 +52,55 @@
         </el-tooltip>
       </el-col>
       <el-col :span="5" class="col24"> <!-- collector item tools -->
-        <el-button type="primary" icon="el-icon-tickets" plain @click.native.prevent="handleShare(item.collectorID)">
+        <el-button type="primary" icon="el-icon-tickets" plain @click.native.prevent="handleConfig(item.collectorID)">
           配置电箱
         </el-button>
-        <el-button type="primary" icon="el-icon-delete" plain @click.native.prevent="handleDel(item.collectorID)">
+        <el-button type="danger" icon="el-icon-delete" plain @click.native.prevent="handleDel(item.collectorID)">
           删除电箱
         </el-button>
       </el-col>
     </el-row>
     <!-- hideForm -->
-    <el-dialog :visible.sync="formDialogVisible" title="增加电箱" width="500px">
-      <el-form :model="formData">
+    <el-dialog :visible.sync="formDialogVisible" title="增加电箱" width="600px">
+      <el-form :model="formAddData">
         <el-form-item label-width="120px" label="设备编码：">
-          <el-input v-model="formData.code" style="width: 310px;" auto-complete="off"/>
+          <el-input v-model="formAddData.code" style="width: 350px;" auto-complete="off"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="formDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="getCollectorBinding(formData.code)">确 定</el-button>
+        <el-button type="primary" @click="getCollectorBinding(formAddData.code)">确 定</el-button>
       </div>
     </el-dialog>
     <!-- hideForm -->
-    <el-dialog :visible.sync="shareDialogVisible" title="配置电箱" width="500px">
+    <el-dialog :visible.sync="configDialogVisible" title="配置电箱" width="600px">
       <el-form :model="configData">
         <el-form-item label-width="120px" label="设备名称：">
-          <el-input v-model="configData.name" auto-complete="off" style="width: 310px"/>
+          <el-input v-model="configData.name" auto-complete="off" style="width: 350px"/>
         </el-form-item>
         <el-form-item label-width="120px" label="波特率">
-          <el-select v-model="configData.bote" placeholder="请选择" style="width: 310px">
+          <el-select v-model="configData.bote" placeholder="请选择" style="width: 350px">
             <el-option label="2400bps" value="2400"/>
             <el-option label="4800bps" value="4800"/>
             <el-option label="9600bps" value="6900"/>
           </el-select>
         </el-form-item>
         <el-form-item label-width="120px" label="采集频率">
-          <el-select v-model="configData.pinglv" placeholder="请选择" style="width: 310px">
+          <el-select v-model="configData.pinglv" placeholder="请选择" style="width: 350px">
             <el-option label="10min" value="10"/>
             <el-option label="15min" value="15"/>
             <el-option label="20min" value="20"/>
           </el-select>
         </el-form-item>
         <el-form-item label-width="120px" label="采集阀值">
-          <el-select v-model="configData.fazhi" placeholder="请选择" style="width: 310px">
+          <el-select v-model="configData.fazhi" placeholder="请选择" style="width: 350px">
             <el-option label="10%" value="10"/>
             <el-option label="15%" value="15"/>
             <el-option label="20%" value="20"/>
           </el-select>
         </el-form-item>
         <el-form-item label-width="120px" label="心跳间隔">
-          <el-select v-model="configData.xintiao" placeholder="请选择" style="width: 310px">
+          <el-select v-model="configData.xintiao" placeholder="请选择" style="width: 350px">
             <el-option label="90s" value="90"/>
             <el-option label="120s" value="120"/>
             <el-option label="150s" value="150"/>
@@ -108,8 +108,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="shareDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="collectorShare(configData.name,configData.enable,configData.collectorID)">确 定
+        <el-button @click="configDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="collectorConfig(configData.name,configData.enable,configData.collectorID)">确 定
         </el-button>
       </div>
     </el-dialog>
@@ -119,14 +119,14 @@
 import Sticky from '@/components/Sticky'
 import SwitchComp from './components/switches'
 import { getToken } from '@/utils/auth'
-import { API_getCollector, API_collectorBinding, API_collectorShare } from './api.js'
+import { API_getCollector, API_collectorBinding } from './api.js'
 
 export default {
   name: 'ElectricBox',
   components: { Sticky, SwitchComp },
   data() {
     return {
-      formData: {
+      formAddData: {
         name: '',
         region: '',
         delivery: false,
@@ -142,30 +142,33 @@ export default {
         xintiao: ''
       },
       formDialogVisible: false,
-      shareDialogVisible: false,
-      gridData: []
+      configDialogVisible: false,
+      collectorData: []
     }
   },
   mounted() {
     this.getCollector()
   },
   methods: {
-    collectorShare(username, enables, collectorID) {
-      API_collectorShare(getToken(), collectorID, username, enables).then(response => {
-        this.$message({
-          type: response.data.code,
-          message: response.data.message
-        })
-        this.shareDialogVisible = true
-      }).catch(error => {
-        console.error(error)
-        this.shareDialogVisible = true
-      })
+    // 集中器配置提交
+    collectorConfig(username, enables, collectorID) {
+      // API_collectorShare(getToken(), collectorID, username, enables).then(response => {
+      //   this.$message({
+      //     type: response.data.code,
+      //     message: response.data.message
+      //   })
+      //   this.configDialogVisible = false
+      // }).catch(error => {
+      //   console.error(error)
+      //   this.configDialogVisible = false
+      // })
     },
-    handleShare(id) {
-      this.shareDialogVisible = true
+    // 打开配置dialog
+    handleConfig(id) {
+      this.configDialogVisible = true
       this.configData.collectorID = id
     },
+    // 打开删除dialog
     handleDel(row) {
       this.$confirm('此操作将永久删除该电箱, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -183,6 +186,7 @@ export default {
         })
       })
     },
+    // 获取集中器列表
     getCollector() {
       const loading = this.$loading({
         lock: true,
@@ -191,25 +195,28 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)'
       })
       API_getCollector(getToken()).then(response => {
-        this.gridData = response.data.data
+        this.collectorData = response.data.data
         loading.close()
       }).catch(error => {
+        loading.close()
         console.error(error)
       })
     },
+    // 绑定（添加）集中器
     getCollectorBinding(collectorCode) {
       API_collectorBinding(getToken(), collectorCode).then(response => {
         this.$message({
           type: response.data.code,
           message: response.data.message
         })
-        this.formData.code = ''
+        this.formAddData.code = ''
         this.formDialogVisible = false
       }).catch(error => {
         this.formDialogVisible = false
         console.error(error)
       })
     },
+    // 时间格式化
     dateFormat(time) {
       var date = new Date(time)
       var year = date.getFullYear()

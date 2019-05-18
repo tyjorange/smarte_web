@@ -1,49 +1,84 @@
 <template>
-  <div>
-    <!--<el-popover placement="right" width="100%" trigger="click">-->
-    <div class="component-item">
-      <el-button :value="switchCode" size="mini">
-        <p>{{ switchCode }}</p>
-      </el-button>
-      <div id="pieChart1"/>
-    </div>
-    <!--<el-button slot="reference" size="mini" icon="el-icon-arrow-right" type="primary"/>-->
-    <!--</el-popover>-->
-  </div>
+  <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
+    <el-tab-pane label="线路详情" name="first">
+      <el-row>
+        <el-col :span="6">
+          <el-progress
+            :percentage="25"
+            :stroke-width="strokeWidth"
+            :width="circleWidth"
+            type="circle"
+            status="text"
+            color="#8e71c7">当前总功率<p>13kw</p></el-progress>
+          <el-progress
+            :percentage="55"
+            :stroke-width="strokeWidth"
+            :width="circleWidth"
+            type="circle"
+            status="text"
+            color="#00FA9A">电流<p>12A</p></el-progress>
+          <el-progress
+            :percentage="85"
+            :stroke-width="strokeWidth"
+            :width="circleWidth"
+            type="circle"
+            status="text"
+            color="#FFD700">电压<p>15V</p></el-progress>
+          <div class="grid-content bg-purple"/>
+        </el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple-light"/>
+          <el-row>设备编码 {{ switchCode }}</el-row>
+          <el-row>累计用电</el-row>
+          <el-row>当月用电</el-row>
+          <el-row>当月无功电量</el-row>
+          <el-row>功率因数</el-row>
+          <el-row>温度</el-row>
+          <el-row>无功电量</el-row>
+          <el-row>无功功率</el-row>
+          <el-row>有功功率</el-row>
+        </el-col>
+      </el-row>
+    </el-tab-pane>
+    <el-tab-pane label="过流设置" name="second">
+      <div class="block">
+        <span class="demonstration">设置线路的最大承受电流，保护线路用电安全</span>
+        <p/>
+        <el-radio v-model="guoliu" :label="16">16A</el-radio>
+        <el-radio v-model="guoliu" :label="20">20A</el-radio>
+        <el-radio v-model="guoliu" :label="25">25A</el-radio>
+        <el-radio v-model="guoliu" :label="32">32A</el-radio>
+        <el-radio v-model="guoliu" :label="63">63A</el-radio>
+      </div>
+      <el-button class="cbtn" type="primary" @click="commitSet(1)">确 定</el-button>
+    </el-tab-pane>
+    <el-tab-pane label="过压设置" name="third">
+      <div class="block">
+        <span class="demonstration">过压值</span>
+        <p/>
+        <el-slider
+          v-model="guoya"
+          :min="guoyaMin"
+          :max="guotaMax"
+          show-input/>
+      </div>
+      <el-button class="cbtn" type="primary" @click="commitSet(2)">确 定</el-button>
+    </el-tab-pane>
+    <el-tab-pane label="欠压设置" name="fourth">
+      <div class="block">
+        <span class="demonstration">欠压值</span>
+        <p/>
+        <el-slider
+          v-model="qianya"
+          :min="qianyaMin"
+          :max="qianyaMax"
+          show-input/>
+      </div>
+      <el-button class="cbtn" type="primary" @click="commitSet(3)">确 定</el-button>
+    </el-tab-pane>
+  </el-tabs>
 </template>
 <script>
-import echarts from 'echarts'
-require('echarts/theme/macarons') // echarts theme
-import { debounce } from '@/utils'
-const demoChartData = {
-  t1: [
-    { value: 320, name: '动力' },
-    { value: 240, name: '照明' },
-    { value: 149, name: '空调' },
-    { value: 100, name: '空压' },
-    { value: 259, name: '电梯' },
-    { value: 100, name: '生活' },
-    { value: 190, name: '特殊' }
-  ],
-  t2: [
-    { value: 120, name: '动力' },
-    { value: 140, name: '照明' },
-    { value: 149, name: '空调' },
-    { value: 100, name: '空压' },
-    { value: 159, name: '电梯' },
-    { value: 100, name: '生活' },
-    { value: 190, name: '特殊' }
-  ],
-  t3: [
-    { value: 220, name: '动力' },
-    { value: 240, name: '照明' },
-    { value: 249, name: '空调' },
-    { value: 100, name: '空压' },
-    { value: 259, name: '电梯' },
-    { value: 100, name: '生活' },
-    { value: 190, name: '特殊' }
-  ]
-}
 export default {
   name: 'SwitchInfoComponents',
   props: {// 父组件传值
@@ -54,86 +89,57 @@ export default {
   },
   data() {
     return {
-      chartData: demoChartData.t3
+      guoliu: 25,
+      guoya: 0,
+      guoyaMin: 250,
+      guotaMax: 380,
+      qianya: 0,
+      qianyaMin: 50,
+      qianyaMax: 180,
+      strokeWidth: 15,
+      circleWidth: 120,
+      activeName: 'first'
     }
   },
   mounted() {
-    this.chart = echarts.init(document.getElementById('pieChart1'), 'macarons')
-    this.getChartData('t3')
-    this.__resizeHandler = debounce(() => {
-      if (this.chart) {
-        this.chart.resize()
-      }
-    }, 100)
-    window.addEventListener('resize', this.__resizeHandler)
   },
   beforeDestroy() {
-    if (!this.chart) {
-      return
-    }
-    window.removeEventListener('resize', this.__resizeHandler)
-    this.chart.dispose()
-    this.chart = null
   },
   methods: {
-    getChartData(type) {
-      const loading = this.$loading({
-        text: '查询中',
-        background: 'rgba(0, 0, 0, 0.1)',
-        target: document.querySelector('.component-item')
-      })
-      // API_GetPieChartData(new Date(), type).then(Response => {
-      //   this.chartData = demoChartData[type]
-      this.setData(this.chartData)
-      loading.close()
-      // }).catch(error => {
-      //   console.error(error)
-      // })
+    handleClick(tab, event) {
+      // console.log(tab, event)
     },
-    setData(actualData) {
-      this.chart.setOption({
-        tooltip: {
-          trigger: 'item',
-          formatter: '{b} : {c} ({d}%)'
-        },
-        legend: {
-          left: 'center',
-          bottom: '10',
-          data: ['动力', '照明', '空调', '空压', '电梯', '生活', '特殊']
-        },
-        calculable: true,
-        series: [
-          {
-            name: 'WEEKLY WRITE ARTICLES',
-            type: 'pie',
-            roseType: 'radius',
-            radius: [15, 95],
-            center: ['50%', '38%'],
-            data: actualData,
-            itemStyle: {
-              normal: {
-                label: {
-                  show: true,
-                  formatter: '{b} : {c} ({d}%)'
-                },
-                labelLine: { show: true }
-              }
-            },
-            animationEasing: 'cubicInOut',
-            animationDuration: 1500
-          }
-        ]
-      })
+    dopen() {
+      // open
+    },
+    resetTabPane() {
+      this.activeName = 'first'
+    },
+    commitSet(type) {
+      console.log(type)
+      console.log(this.guoliu)
+      console.log(this.guoya)
+      console.log(this.qianya)
     }
   }
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  #pieChart1{
+  #pieChart1 {
     width: 530px;
     height: 300px;
   }
+
   .component-item {
     min-height: 360px;
+  }
+
+  .cbtn {
+    margin: 5px 20px 5px 20px;
+    float: right;
+  }
+
+  .block {
+    margin: 5px 20px 5px 20px;
   }
 </style>

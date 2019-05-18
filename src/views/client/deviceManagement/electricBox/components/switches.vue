@@ -1,8 +1,13 @@
 <template>
   <div>
-    <el-popover :ref="'popover-' + collectorCode" placement="right-start" width="100%" trigger="manual" @show="popShow">
-      <el-button class="closePop" icon="el-icon-close" size="mini" @click="pClose(collectorCode)"/>
-      <el-table :data="gridData" :class="'pop'+collectorCode">
+    <el-popover
+      :ref="'popover-' + collectorCode"
+      placement="right-start"
+      width="100%"
+      trigger="manual"
+      @show="popShow">
+      <el-button class="closePop" icon="el-icon-close" size="mini" @click="popClose(collectorCode)"/>
+      <el-table :data="gridData" :class="'pop'+collectorCode" max-height="400">
         <el-table-column width="100" property="iconType" label="图标">
           <template slot-scope="scope">
             <img v-if="scope.row.iconType === 0" class="images_ebs" src="@/assets/xianlu/linepic01@3x.png" alt="">
@@ -18,11 +23,11 @@
           </template>
         </el-table-column>
         <el-table-column width="150" property="code" label="CODE"/>
-        <el-table-column width="100" property="name" label="线路名称"/>
+        <el-table-column width="150" property="name" label="线路名称"/>
         <!--<el-table-column width="100" property="switchID" label="switchID"/>-->
         <!--<el-table-column width="100" property="sequence" label="sequence"/>-->
         <!--<el-table-column width="100" property="state" label="state"/>-->
-        <el-table-column width="320" label="操作">
+        <el-table-column width="350" label="操作">
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.state"
@@ -34,25 +39,24 @@
             <el-button
               size="mini"
               @click="handleEditInfo(scope.$index, scope.row)">
-              编辑
+              <i class="el-icon-edit"/> 编辑
             </el-button>
             <el-button
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)">
-              删除
+              <i class="el-icon-delete"/> 删除
             </el-button>
             <el-button
               size="mini"
               type="primary"
               @click="handleDetail(scope.$index, scope.row)">
-              查看
-              <i class="el-icon-arrow-right el-icon--right"/>
+              <i class="el-icon-document"/> 查看
             </el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-button slot="reference" icon="el-icon-plus" round @click="pOpen(collectorCode)"/>
+      <el-button slot="reference" icon="el-icon-plus" round @click="popOpen(collectorCode)"/>
     </el-popover>
     <!-- Form -->
     <el-dialog :visible.sync="swithcEditVisible" title="修改线路" append-to-body>
@@ -73,8 +77,15 @@
       </div>
     </el-dialog>
     <!-- Form -->
-    <el-dialog :visible.sync="switchInfoVisible" :close-on-click-modal="onEscClose" :close-on-press-escape="onEscClose" title="详细信息" append-to-body>
-      <switch-info :switch-code="toDialogVal"/>
+    <el-dialog
+      :visible.sync="switchInfoVisible"
+      :close-on-click-modal="onEscClose"
+      :close-on-press-escape="onEscClose"
+      title="详细信息"
+      append-to-body
+      @open="dialogOpen"
+      @close="dialogClose">
+      <switch-info ref="mychild" :switch-code="toChildVal"/>
     </el-dialog>
   </div>
 </template>
@@ -97,8 +108,8 @@ export default {
       gridData: [],
       swithcEditVisible: false,
       switchInfoVisible: false,
-      onEscClose: false, // 不允许遮罩和ESC关闭
-      toDialogVal: '',
+      onEscClose: true, // 是否允许遮罩和ESC关闭
+      toChildVal: '',
       switchData: {
         name: '',
         icons: ''
@@ -124,10 +135,22 @@ export default {
         console.error(error)
       })
     },
-    pOpen(id) {
-      this.$refs[`popover-` + id].doShow()
+    dialogOpen() {
+      const self = this
+      setTimeout(function() {
+        self.$refs.mychild.dopen()
+      }, 500)// 等组件生成再调用dopen
     },
-    pClose(id) {
+    dialogClose() {
+      const self = this
+      setTimeout(function() {
+        self.$refs.mychild.resetTabPane()
+      }, 500)// 等组件生成再调用resets
+    },
+    popOpen(id) {
+      this.$refs[`popover-` + id].doToggle()
+    },
+    popClose(id) {
       this.$refs[`popover-` + id].doClose()
     },
     popShow() {
@@ -167,7 +190,7 @@ export default {
     },
     handleDetail(index, row) {
       this.switchInfoVisible = true
-      this.toDialogVal = row.code
+      this.toChildVal = row.code
     }
   }
 }
@@ -189,7 +212,8 @@ export default {
     border: 0;
     padding: 0;
   }
-  .closePop{
-    float:right
+
+  .closePop {
+    float: right
   }
 </style>

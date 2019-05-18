@@ -39,7 +39,12 @@
         </div>
       </el-col>
       <el-col :span="3" class="col28"> <!-- collector is online -->
-        <el-tooltip :content="dateFormat(item.activeTime.time)" class="text-item" effect="dark" placement="right-end">
+        <el-button type="text">当前状态：</el-button>
+        <el-tooltip
+          :content="'最后在线时间：' + dateFormat(item.activeTime.time)"
+          class="text-item"
+          effect="dark"
+          placement="right-end">
           <!--<img v-if="item.active == 0" class="images_ebs" src="@/assets/zaixianzhuangtai0.png">-->
           <el-button v-if="item.active === 0" type="danger" icon="el-icon-close" round>离线</el-button>
           <!--<img v-else-if="item.active == 1" class="images_ebs" src="@/assets/zaixianzhuangtai1.png">-->
@@ -47,19 +52,19 @@
         </el-tooltip>
       </el-col>
       <el-col :span="5" class="col24"> <!-- collector item tools -->
-        <el-button type="primary" icon="el-icon-share" plain @click.native.prevent="handleShare(item.collectorID)">
-          共享电箱
+        <el-button type="primary" icon="el-icon-tickets" plain @click.native.prevent="handleShare(item.collectorID)">
+          配置电箱
         </el-button>
         <el-button type="primary" icon="el-icon-delete" plain @click.native.prevent="handleDel(item.collectorID)">
           删除电箱
         </el-button>
       </el-col>
     </el-row>
-    <!-- Form -->
-    <el-dialog :visible.sync="formDialogVisible" title="增加电箱">
+    <!-- hideForm -->
+    <el-dialog :visible.sync="formDialogVisible" title="增加电箱" width="500px">
       <el-form :model="formData">
         <el-form-item label-width="120px" label="设备编码：">
-          <el-input v-model="formData.code" style="width: 450px;" auto-complete="off"/>
+          <el-input v-model="formData.code" style="width: 310px;" auto-complete="off"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -67,22 +72,44 @@
         <el-button type="primary" @click="getCollectorBinding(formData.code)">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- Form -->
-    <el-dialog :visible.sync="shareDialogVisible" title="共享电箱">
-      <el-form :model="shareData">
-        <el-form-item label-width="120px" label="共享用户：">
-          <el-input v-model="shareData.name" style="width: 450px;" auto-complete="off"/>
+    <!-- hideForm -->
+    <el-dialog :visible.sync="shareDialogVisible" title="配置电箱" width="500px">
+      <el-form :model="configData">
+        <el-form-item label-width="120px" label="设备名称：">
+          <el-input v-model="configData.name" auto-complete="off" style="width: 310px"/>
         </el-form-item>
-        <el-form-item label-width="120px" label="权限">
-          <el-select v-model="shareData.enable" placeholder="请选择活动区域" style="width: 450px;">
-            <el-option label="禁止操作" value="0"/>
-            <el-option label="可操作" value="1"/>
+        <el-form-item label-width="120px" label="波特率">
+          <el-select v-model="configData.bote" placeholder="请选择" style="width: 310px">
+            <el-option label="2400bps" value="2400"/>
+            <el-option label="4800bps" value="4800"/>
+            <el-option label="9600bps" value="6900"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label-width="120px" label="采集频率">
+          <el-select v-model="configData.pinglv" placeholder="请选择" style="width: 310px">
+            <el-option label="10min" value="10"/>
+            <el-option label="15min" value="15"/>
+            <el-option label="20min" value="20"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label-width="120px" label="采集阀值">
+          <el-select v-model="configData.fazhi" placeholder="请选择" style="width: 310px">
+            <el-option label="10%" value="10"/>
+            <el-option label="15%" value="15"/>
+            <el-option label="20%" value="20"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label-width="120px" label="心跳间隔">
+          <el-select v-model="configData.xintiao" placeholder="请选择" style="width: 310px">
+            <el-option label="90s" value="90"/>
+            <el-option label="120s" value="120"/>
+            <el-option label="150s" value="150"/>
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="shareDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="collectorShare(shareData.name,shareData.enable,shareData.collectorID)">确 定
+        <el-button type="primary" @click="collectorShare(configData.name,configData.enable,configData.collectorID)">确 定
         </el-button>
       </div>
     </el-dialog>
@@ -107,11 +134,12 @@ export default {
         resource: '',
         desc: ''
       },
-      shareData: {
-        code: '',
-        delivery: false,
+      configData: {
         name: '',
-        collectorID: ''
+        bote: '',
+        pinglv: '',
+        fazhi: '',
+        xintiao: ''
       },
       formDialogVisible: false,
       shareDialogVisible: false,
@@ -136,7 +164,7 @@ export default {
     },
     handleShare(id) {
       this.shareDialogVisible = true
-      this.shareData.collectorID = id
+      this.configData.collectorID = id
     },
     handleDel(row) {
       this.$confirm('此操作将永久删除该电箱, 是否继续?', '提示', {
@@ -197,6 +225,7 @@ export default {
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
   .root {
+    min-width: 1500px;
     background: url(../../../../assets/main.jpg) no-repeat fixed;
   }
 
@@ -223,13 +252,19 @@ export default {
   }
 
   .col24 {
+    float: right;
+    text-align: right;
     min-width: 250px;
-    margin: 60px;
+    margin: 60px 15px 60px 30px;
   }
 
   .col28 {
-    min-width: 50px;
+    min-width: 250px;
     margin: 60px 5px 5px;
+  }
+
+  .dialog-footer {
+    margin-right: 30px;
   }
 
   .col_items {

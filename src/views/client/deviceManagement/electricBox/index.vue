@@ -87,14 +87,16 @@
     </el-dialog>
     <!-- hideForm -->
     <el-dialog :visible.sync="shareDialogVisible" title="共享管理" width="650px">
-      <el-transfer
-        :titles="['所有用户', '被分享的用户']"
-        :filter-method="filterMethod"
-        v-model="shareData"
-        :data="shareList"
-        :button-texts="['到左边', '到右边']"
-        filterable
-        filter-placeholder="请输入用户名"/>
+      <!--使用树形穿梭框组件-->
+      <tree-transfer :title="title" :from_data="fromData" :to_data="toData" :default-props="{label:'label'}" :mode="mode" height="540px" filter open-all @addBtn="add" @removeBtn="remove"/>
+      <!--<el-transfer-->
+      <!--:titles="['所有用户', '被分享的用户']"-->
+      <!--:filter-method="filterMethod"-->
+      <!--v-model="shareData"-->
+      <!--:data="shareList"-->
+      <!--:button-texts="['到左边', '到右边']"-->
+      <!--filterable-->
+      <!--filter-placeholder="请输入用户名"/>-->
       <div slot="footer" class="dialog-footer">
         <el-button @click="shareDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="shareSubmit">确 定
@@ -146,29 +148,47 @@
 </template>
 <script>
 import Sticky from '@/components/Sticky'
+import treeTransfer from 'el-tree-transfer'
 import SwitchComp from './components/switchesPopover'
 import { getToken } from '@/utils/auth'
 import { API_getCollector, API_collectorBinding } from './api.js'
 
 export default {
   name: 'ElectricBox',
-  components: { Sticky, SwitchComp },
+  components: { Sticky, treeTransfer, SwitchComp },
   data() {
-    const generateUserListData = () => {
-      const data = []
-      const cities = ['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7']
-      const pinyin = ['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7']
-      cities.forEach((city, index) => {
-        data.push({
-          label: city,
-          key: index,
-          pinyin: pinyin[index]
-        })
-      })
-      console.log(data)// 服务器转来的数据转成的el-transfer所需格式 TODO
-      return data
-    }
+    // const generateUserListData = () => {
+    //   const data = []
+    //   const cities = ['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7']
+    //   const pinyin = ['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7']
+    //   cities.forEach((city, index) => {
+    //     data.push({
+    //       label: city,
+    //       key: index,
+    //       pinyin: pinyin[index]
+    //     })
+    //   })
+    //   console.log(data)// 服务器转来的数据转成的el-transfer所需格式 TODO
+    //   return data
+    // }
     return {
+      // 树形穿梭框start
+      title: ['所有用户', '被分享的用户'],
+      mode: 'transfer', // transfer addressList
+      fromData: [
+        {
+          pid: 0,
+          id: '1',
+          label: '201905060009gprs123'
+        },
+        {
+          pid: 0,
+          id: '2',
+          label: '内网测试22'
+        }
+      ],
+      toData: [],
+      // 树形穿梭框end
       collectorAddData: {// 添加电箱表单值
         code: ''
       },
@@ -183,9 +203,9 @@ export default {
       formDialogVisible: false, // 添加dialog可见性
       shareDialogVisible: false, // 共享dialog可见性
       configDialogVisible: false, // 配置dialog可见性
-      collectorData: [], // 从服务器获取的电箱列表
-      shareList: generateUserListData(), // 从服务器获取的可被分享的用户列表
-      shareData: [] // 勾选的被分享用户列表（key list）
+      collectorData: [] // 从服务器获取的电箱列表
+      // shareList: generateUserListData(), // 从服务器获取的可被分享的用户列表
+      // shareData: [] // 勾选的被分享用户列表（key list）
     }
   },
   mounted() {
@@ -207,7 +227,7 @@ export default {
     },
     // 共享集中器数据提交 TODO
     shareSubmit() {
-      console.log(this.shareData)
+      // console.log(this.shareData)
       this.shareDialogVisible = false
     },
     // 集中器配置提交 TODO
@@ -287,6 +307,22 @@ export default {
     // 分享dialog的自定义搜索方法
     filterMethod(query, item) {
       return item.pinyin.indexOf(query) > -1
+    },
+    // 监听穿梭框组件添加
+    add(fromData, toData, obj) {
+      // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
+      // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
+      console.log('fromData:', fromData)
+      console.log('toData:', toData)
+      console.log('obj:', obj)
+    },
+    // 监听穿梭框组件移除
+    remove(fromData, toData, obj) {
+      // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
+      // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
+      console.log('fromData:', fromData)
+      console.log('toData:', toData)
+      console.log('obj:', obj)
     }
   }
 }

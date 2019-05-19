@@ -48,14 +48,16 @@
     </el-row>
     <!-- hideForm -->
     <el-dialog :visible.sync="switchDialogVisible" title="线路管理" width="650px">
-      <el-transfer
-        :titles="['我的电箱', '关联的电箱']"
-        :filter-method="filterMethod"
-        v-model="shareData"
-        :data="shareList"
-        :button-texts="['到左边', '到右边']"
-        filterable
-        filter-placeholder="请输入电箱名"/>
+      <!--使用树形穿梭框组件-->
+      <tree-transfer :title="title" :from_data="fromData" :to_data="toData" :default-props="{label:'label'}" :mode="mode" height="540px" filter open-all @addBtn="add" @removeBtn="remove"/>
+      <!--<el-transfer-->
+      <!--:titles="['我的电箱', '关联的电箱']"-->
+      <!--:filter-method="filterMethod"-->
+      <!--v-model="shareData"-->
+      <!--:data="shareList"-->
+      <!--:button-texts="['到左边', '到右边']"-->
+      <!--filterable-->
+      <!--filter-placeholder="请输入电箱名"/>-->
       <div slot="footer" class="dialog-footer">
         <el-button @click="switchDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="sceneSwitchSubmit">确 定
@@ -121,37 +123,78 @@
 </template>
 <script>
 import Sticky from '@/components/Sticky'
+import treeTransfer from 'el-tree-transfer'
 import { getToken } from '@/utils/auth'
 import { API_getScene } from './api.js'
-
 export default {
   name: 'Scene',
-  components: { Sticky },
+  components: { Sticky, treeTransfer },
   data() {
-    const generateUserListData = () => {
-      const data = []
-      const cities = ['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7']
-      const pinyin = ['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7']
-      cities.forEach((city, index) => {
-        data.push({
-          label: city,
-          key: index,
-          pinyin: pinyin[index]
-        })
-      })
-      console.log(data)// 服务器转来的数据转成的el-transfer所需格式 TODO
-      return data
-    }
+    // const generateUserListData = () => {
+    //   const data = []
+    //   const cities = ['卧室/201905060009gprs123', '客厅/201905060009gprs123', 'user3', 'user4', 'user5', 'user6', 'user7']
+    //   const pinyin = ['卧室/201905060009gprs123', '客厅/201905060009gprs123', 'user3', 'user4', 'user5', 'user6', 'user7']
+    //   cities.forEach((city, index) => {
+    //     data.push({
+    //       label: city,
+    //       key: index,
+    //       pinyin: pinyin[index]
+    //     })
+    //   })
+    //   console.log(data)// 服务器转来的数据转成的el-transfer所需格式 TODO
+    //   return data
+    // }
     return {
+      // 树形穿梭框start
+      title: ['我的电箱', '线路关联的电箱'],
+      mode: 'transfer', // transfer addressList
+      fromData: [
+        {
+          pid: 0,
+          id: '1',
+          label: '201905060009gprs123',
+          children: [
+            {
+              pid: '1',
+              id: '1-1',
+              label: '卧室'
+            },
+            {
+              pid: '1',
+              id: '1-2',
+              label: '客厅'
+            }
+          ]
+        },
+        {
+          pid: 0,
+          id: '2',
+          label: '内网测试22',
+          children: [
+            {
+              pid: '2',
+              id: '2-1',
+              label: '书房'
+            },
+            {
+              pid: '2',
+              id: '2-2',
+              label: '照明'
+            }
+          ]
+        }
+      ],
+      toData: [],
+      // 树形穿梭框end
       configData: {
         name: '',
         iconType: ''
       },
       switchDialogVisible: false, // 场景下线路管理dialog可见性
       configDialogVisible: false, // 场景名称图片dialog可见性
-      sceneDataList: [], // 从服务器获取的场景列表
-      shareList: generateUserListData(), // 从服务器获取的电箱列表（不含分享来的）
-      shareData: [] // 勾选的电箱列表（key list）
+      sceneDataList: [] // 从服务器获取的场景列表
+      // shareList: generateUserListData(), // 从服务器获取的电箱列表（不含分享来的）
+      // shareData: [] // 勾选的电箱列表（key list）
     }
   },
   mounted() {
@@ -174,7 +217,7 @@ export default {
     },
     // 场景关联的线路提交 TODO
     sceneSwitchSubmit() {
-      console.log(this.shareData)
+      // console.log(this.shareData)
       this.switchDialogVisible = false
     },
     // 打开场景下的线路管理dialog
@@ -247,6 +290,22 @@ export default {
     iconSelect(val) {
       console.log(val)
       this.configData.iconType = val
+    },
+    // 监听穿梭框组件添加
+    add(fromData, toData, obj) {
+      // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
+      // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
+      console.log('fromData:', fromData)
+      console.log('toData:', toData)
+      console.log('obj:', obj)
+    },
+    // 监听穿梭框组件移除
+    remove(fromData, toData, obj) {
+      // 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
+      // 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
+      console.log('fromData:', fromData)
+      console.log('toData:', toData)
+      console.log('obj:', obj)
     }
   }
 }

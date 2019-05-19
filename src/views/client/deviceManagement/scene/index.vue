@@ -313,6 +313,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
   .root {
     min-width: 1500px;
+    min-height: 800px;
     background: url(../../../../assets/main.jpg) no-repeat fixed;
   }
 

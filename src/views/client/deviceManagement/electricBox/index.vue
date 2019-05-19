@@ -330,6 +330,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
   .root {
     min-width: 1500px;
+    min-height: 800px;
     background: url(../../../../assets/main.jpg) no-repeat fixed;
   }
 
@@ -376,7 +377,19 @@ export default {
     margin: 0 5px 5px 5px;
     background-color: #c0c4cc5c;
   }
-
+  .el-tabs__item {
+    padding: 0 20px;
+    height: 40px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    line-height: 40px;
+    display: inline-block;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #303133;
+    position: relative;
+  }
   .el-button--text {
     color: #656565;
   }

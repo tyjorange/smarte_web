@@ -98,12 +98,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/client/deviceManagement/electricBox/index.vue'),
         meta: { title: 'ElectricBox', icon: 'example' }
       },
-      {
-        path: '/myShare',
-        name: 'MyShare',
-        component: () => import('@/views/client/deviceManagement/myShare/index.vue'),
-        meta: { title: 'MyShare', icon: 'example' }
-      },
+      // {
+      //   path: '/myShare',
+      //   name: 'MyShare',
+      //   component: () => import('@/views/client/deviceManagement/myShare/index.vue'),
+      //   meta: { title: 'MyShare', icon: 'example' }
+      // },
       {
         path: '/scene',
         name: 'Scene',

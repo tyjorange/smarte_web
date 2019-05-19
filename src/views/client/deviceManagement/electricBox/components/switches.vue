@@ -45,16 +45,16 @@
             <el-button
               size="mini"
               plain
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">
-              <i class="el-icon-delete"/> 删除
+              type="primary"
+              @click="handleDetail(scope.$index, scope.row)">
+              <i class="el-icon-document"/> 查看
             </el-button>
             <el-button
               size="mini"
               plain
-              type="primary"
-              @click="handleDetail(scope.$index, scope.row)">
-              <i class="el-icon-document"/> 查看
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)">
+              <i class="el-icon-delete"/> 删除
             </el-button>
           </template>
         </el-table-column>
@@ -129,7 +129,7 @@
   </div>
 </template>
 <script>
-import SwitchInfo from './switchInfo'
+import SwitchInfo from './switchInfoDialog'
 import { getToken } from '@/utils/auth'
 import { API_getSwitchByCollector } from '../api.js'
 

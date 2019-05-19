@@ -12,7 +12,10 @@
               v-for="item in controllers"
               :key="item.code"
               :label="item.name"
-              :value="item"/>
+              :value="item">
+              <span v-if="item.beShared === 0">{{ item.name }}</span>
+              <span v-if="item.beShared === 1">{{ item.name }}({{ item.ownerUser.username }})</span>
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="断路器" prop="switchObj.switchID">

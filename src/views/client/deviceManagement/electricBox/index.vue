@@ -1,8 +1,8 @@
 <template>
   <div class="root">
     <div class="col11">
-      <sticky class-name="sub-navbar">
-        <el-button type="primary" icon="el-icon-circle-plus" plain @click="formDialogVisible = true">增加电箱</el-button>
+      <sticky :z-index="10" :sticky-top="0" class-name="sub-navbar">
+        <el-button type="primary" icon="el-icon-circle-plus" plain @click="formDialogVisible = true">增加</el-button>
         <el-button type="primary" icon="el-icon-refresh" plain @click="getCollector">刷新</el-button>
       </sticky>
     </div>
@@ -23,7 +23,8 @@
       <el-col :span="4" class="col23"> <!-- collector item info -->
         <div class="name-card">
           <div class="text-item" effect="dark" placement="right-end">
-            <el-button type="text">编码：{{ item.code }}</el-button>
+            <el-button v-if="item.beShared === 0" type="text">编码：{{ item.code }}</el-button>
+            <el-button v-if="item.beShared === 1" type="text">编码：{{ item.code }}【{{ item.ownerUser.username }}分享的电箱】</el-button>
           </div>
           <div class="text-item" effect="dark" placement="right-end">
             <el-button type="text">智能电箱：{{ item.name }}</el-button>
@@ -51,25 +52,53 @@
           <el-button v-else-if="item.active === 1" type="success" icon="el-icon-check" round>在线</el-button>
         </el-tooltip>
       </el-col>
-      <el-col :span="5" class="col24"> <!-- collector item tools -->
-        <el-button type="primary" icon="el-icon-tickets" plain @click.native.prevent="handleConfig(item.collectorID)">
-          配置电箱
+      <el-col :span="8" class="col24"> <!-- collector item tools -->
+        <el-button v-if="item.beShared === 0" type="primary" icon="el-icon-share" plain @click.native.prevent="handleShare(item.collectorID)">
+          共享({{ item.share }})
         </el-button>
-        <el-button type="danger" icon="el-icon-delete" plain @click.native.prevent="handleDel(item.collectorID)">
-          删除电箱
+        <el-button v-if="item.beShared === 1" type="primary" icon="el-icon-share" plain disabled>
+          共享
+        </el-button>
+        <el-button v-if="item.beShared === 0" type="primary" icon="el-icon-tickets" plain @click.native.prevent="handleConfig(item.collectorID)">
+          配置
+        </el-button>
+        <el-button v-if="item.beShared === 1" type="primary" icon="el-icon-tickets" plain disabled>
+          配置
+        </el-button>
+        <el-button v-if="item.beShared === 0" type="danger" icon="el-icon-delete" plain @click.native.prevent="handleDel(item.collectorID)">
+          删除
+        </el-button>
+        <el-button v-if="item.beShared === 1" type="danger" icon="el-icon-delete" plain disabled>
+          删除
         </el-button>
       </el-col>
     </el-row>
     <!-- hideForm -->
     <el-dialog :visible.sync="formDialogVisible" title="增加电箱" width="600px">
-      <el-form :model="formAddData">
+      <el-form :model="collectorAddData">
         <el-form-item label-width="120px" label="设备编码：">
-          <el-input v-model="formAddData.code" style="width: 350px;" auto-complete="off"/>
+          <el-input v-model="collectorAddData.code" style="width: 350px;" auto-complete="off"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="formDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="getCollectorBinding(formAddData.code)">确 定</el-button>
+        <el-button type="primary" @click="collectorBindingSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- hideForm -->
+    <el-dialog :visible.sync="shareDialogVisible" title="共享电箱" width="650px">
+      <el-transfer
+        :titles="['所有用户', '被分享的用户']"
+        :filter-method="filterMethod"
+        v-model="shareData"
+        :data="shareList"
+        :button-texts="['到左边', '到右边']"
+        filterable
+        filter-placeholder="请输入用户名"/>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="shareDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="shareSubmit">确 定
+        </el-button>
       </div>
     </el-dialog>
     <!-- hideForm -->
@@ -109,7 +138,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="configDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="collectorConfig(configData.name,configData.enable,configData.collectorID)">确 定
+        <el-button type="primary" @click="collectorConfigSubmit">确 定
         </el-button>
       </div>
     </el-dialog>
@@ -125,14 +154,23 @@ export default {
   name: 'ElectricBox',
   components: { Sticky, SwitchComp },
   data() {
+    const generateUserListData = () => {
+      const data = []
+      const cities = ['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7']
+      const pinyin = ['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7']
+      cities.forEach((city, index) => {
+        data.push({
+          label: city,
+          key: index,
+          pinyin: pinyin[index]
+        })
+      })
+      console.log(data)// 服务器转来的数据转成的el-transfer所需格式
+      return data
+    }
     return {
-      formAddData: {
-        name: '',
-        region: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+      collectorAddData: {// 表单值
+        code: ''
       },
       configData: {
         name: '',
@@ -142,16 +180,37 @@ export default {
         xintiao: ''
       },
       formDialogVisible: false,
+      shareDialogVisible: false,
       configDialogVisible: false,
-      collectorData: []
+      collectorData: [],
+      shareList: generateUserListData(),
+      shareData: []
     }
   },
   mounted() {
     this.getCollector()
   },
   methods: {
-    // 集中器配置提交
-    collectorConfig(username, enables, collectorID) {
+    // 集中器绑定（添加）提交 TODO
+    collectorBindingSubmit() {
+      API_collectorBinding(getToken(), this.collectorAddData.code).then(response => {
+        this.$message({
+          type: response.data.code,
+          message: response.data.message
+        })
+        this.formDialogVisible = false
+      }).catch(error => {
+        this.formDialogVisible = false
+        console.error(error)
+      })
+    },
+    // 共享集中器数据提交 TODO
+    shareSubmit() {
+      console.log(this.shareData)
+      this.shareDialogVisible = false
+    },
+    // 集中器配置提交 TODO
+    collectorConfigSubmit() {
       // API_collectorShare(getToken(), collectorID, username, enables).then(response => {
       //   this.$message({
       //     type: response.data.code,
@@ -162,6 +221,13 @@ export default {
       //   console.error(error)
       //   this.configDialogVisible = false
       // })
+      console.log(this.configData)
+      this.configDialogVisible = false
+    },
+    // 打开分享dialog
+    handleShare(id) {
+      this.shareDialogVisible = true
+      this.configData.collectorID = id
     },
     // 打开配置dialog
     handleConfig(id) {
@@ -202,20 +268,6 @@ export default {
         console.error(error)
       })
     },
-    // 绑定（添加）集中器
-    getCollectorBinding(collectorCode) {
-      API_collectorBinding(getToken(), collectorCode).then(response => {
-        this.$message({
-          type: response.data.code,
-          message: response.data.message
-        })
-        this.formAddData.code = ''
-        this.formDialogVisible = false
-      }).catch(error => {
-        this.formDialogVisible = false
-        console.error(error)
-      })
-    },
     // 时间格式化
     dateFormat(time) {
       var date = new Date(time)
@@ -226,6 +278,10 @@ export default {
       var minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
       var seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
+    },
+    // 分享dialog的自定义搜索方法
+    filterMethod(query, item) {
+      return item.pinyin.indexOf(query) > -1
     }
   }
 }
@@ -286,6 +342,10 @@ export default {
 
   .el-row {
     min-width: 1000px;
+  }
+
+  .el-transfer {
+    margin-left: 35px
   }
 
   .name-card {

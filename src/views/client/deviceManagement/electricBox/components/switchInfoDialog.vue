@@ -31,7 +31,6 @@
           <el-form :label-position="labelPosition" :model="formLabelAlign" label-width="120px">
             <el-form-item label="设备编码：">
               <span class="demonstration">{{ switchCode }}</span>
-              <el-tag type="success">正常</el-tag>
             </el-form-item>
             <el-form-item label="累计用电：">
               <span class="demonstration">110 kw/h</span>

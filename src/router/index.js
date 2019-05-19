@@ -96,7 +96,7 @@ export const asyncRouterMap = [
         path: '/electricBox',
         name: 'ElectricBox',
         component: () => import('@/views/client/deviceManagement/electricBox/index.vue'),
-        meta: { title: 'ElectricBox', icon: 'example' }
+        meta: { title: 'ElectricBox', icon: 'component' }
       },
       // {
       //   path: '/myShare',
@@ -108,13 +108,13 @@ export const asyncRouterMap = [
         path: '/scene',
         name: 'Scene',
         component: () => import('@/views/client/deviceManagement/scene/index.vue'),
-        meta: { title: 'Scene', icon: 'example' }
+        meta: { title: 'Scene', icon: 'guide' }
       },
       {
         path: '/timingTask',
         name: 'TimingTask',
         component: () => import('@/views/client/deviceManagement/timingTask/index.vue'),
-        meta: { title: 'TimingTask', icon: 'example' }
+        meta: { title: 'TimingTask', icon: 'excel' }
       }
     ]
   },
@@ -129,19 +129,19 @@ export const asyncRouterMap = [
         path: '/electricityDailyIndex',
         name: 'ElectricityDailyIndex',
         component: () => import('@/views/client/appStatistics/electricityDailyIndex/index.vue'),
-        meta: { title: 'ElectricityDailyIndex', icon: 'tree' }
+        meta: { title: 'ElectricityDailyIndex', icon: 'star' }
       },
       {
         path: '/electricityMonthlyIndex',
         name: 'ElectricityMonthlyIndex',
         component: () => import('@/views/client/appStatistics/electricityMonthlyIndex/index.vue'),
-        meta: { title: 'ElectricityMonthlyIndex', icon: 'tree' }
+        meta: { title: 'ElectricityMonthlyIndex', icon: 'table' }
       },
       {
         path: '/electricityFees',
         name: 'ElectricityFees',
         component: () => import('@/views/client/appStatistics/electricityFees/index.vue'),
-        meta: { title: 'ElectricityFees', icon: 'tree' }
+        meta: { title: 'ElectricityFees', icon: 'money' }
       }
     ]
   },
@@ -150,19 +150,19 @@ export const asyncRouterMap = [
     component: Layout,
     redirect: '/alarmInformation',
     name: 'LogBook',
-    meta: { title: 'LogBook', icon: 'nested' },
+    meta: { title: 'LogBook', icon: 'list' },
     children: [
       {
         path: '/alarmInformation',
         name: 'AlarmInformation',
         component: () => import('@/views/client/logBook/alarmInformation/index.vue'),
-        meta: { title: 'AlarmInformation', icon: 'nested' }
+        meta: { title: 'AlarmInformation', icon: 'message' }
       },
       {
         path: '/logInformation',
         name: 'LogInformation',
         component: () => import('@/views/client/logBook/logInformation/index.vue'),
-        meta: { title: 'LogInformation', icon: 'nested' }
+        meta: { title: 'LogInformation', icon: 'form' }
       }
     ]
   },

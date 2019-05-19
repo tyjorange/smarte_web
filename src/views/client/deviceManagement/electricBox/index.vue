@@ -53,19 +53,19 @@
         </el-tooltip>
       </el-col>
       <el-col :span="8" class="col24"> <!-- collector item tools -->
-        <el-button v-if="item.beShared === 0" type="primary" icon="el-icon-share" plain @click.native.prevent="handleShare(item.collectorID)">
+        <el-button v-if="item.beShared === 0" type="primary" icon="el-icon-share" plain @click.native.prevent="handleShare(item)">
           共享({{ item.share }})
         </el-button>
         <el-button v-if="item.beShared === 1" type="primary" icon="el-icon-share" plain disabled>
           共享
         </el-button>
-        <el-button v-if="item.beShared === 0" type="primary" icon="el-icon-tickets" plain @click.native.prevent="handleConfig(item.collectorID)">
+        <el-button v-if="item.beShared === 0" type="primary" icon="el-icon-tickets" plain @click.native.prevent="handleConfig(item)">
           配置
         </el-button>
         <el-button v-if="item.beShared === 1" type="primary" icon="el-icon-tickets" plain disabled>
           配置
         </el-button>
-        <el-button v-if="item.beShared === 0" type="danger" icon="el-icon-delete" plain @click.native.prevent="handleDel(item.collectorID)">
+        <el-button v-if="item.beShared === 0" type="danger" icon="el-icon-delete" plain @click.native.prevent="handleDel(item)">
           删除
         </el-button>
         <el-button v-if="item.beShared === 1" type="danger" icon="el-icon-delete" plain disabled>
@@ -86,7 +86,7 @@
       </div>
     </el-dialog>
     <!-- hideForm -->
-    <el-dialog :visible.sync="shareDialogVisible" title="共享电箱" width="650px">
+    <el-dialog :visible.sync="shareDialogVisible" title="共享管理" width="650px">
       <el-transfer
         :titles="['所有用户', '被分享的用户']"
         :filter-method="filterMethod"
@@ -146,7 +146,7 @@
 </template>
 <script>
 import Sticky from '@/components/Sticky'
-import SwitchComp from './components/switches'
+import SwitchComp from './components/switchesPopover'
 import { getToken } from '@/utils/auth'
 import { API_getCollector, API_collectorBinding } from './api.js'
 
@@ -165,26 +165,27 @@ export default {
           pinyin: pinyin[index]
         })
       })
-      console.log(data)// 服务器转来的数据转成的el-transfer所需格式
+      console.log(data)// 服务器转来的数据转成的el-transfer所需格式 TODO
       return data
     }
     return {
-      collectorAddData: {// 表单值
+      collectorAddData: {// 添加电箱表单值
         code: ''
       },
-      configData: {
+      configData: {// 配置电箱表单值
+        collectorID: '',
         name: '',
         bote: '',
         pinglv: '',
         fazhi: '',
         xintiao: ''
       },
-      formDialogVisible: false,
-      shareDialogVisible: false,
-      configDialogVisible: false,
-      collectorData: [],
-      shareList: generateUserListData(),
-      shareData: []
+      formDialogVisible: false, // 添加dialog可见性
+      shareDialogVisible: false, // 共享dialog可见性
+      configDialogVisible: false, // 配置dialog可见性
+      collectorData: [], // 从服务器获取的电箱列表
+      shareList: generateUserListData(), // 从服务器获取的可被分享的用户列表
+      shareData: [] // 勾选的被分享用户列表（key list）
     }
   },
   mounted() {
@@ -224,18 +225,19 @@ export default {
       console.log(this.configData)
       this.configDialogVisible = false
     },
-    // 打开分享dialog
-    handleShare(id) {
+    // 打开分享电箱dialog
+    handleShare(item) {
       this.shareDialogVisible = true
-      this.configData.collectorID = id
+      this.configData.collectorID = item.collectorID
     },
-    // 打开配置dialog
-    handleConfig(id) {
+    // 打开配置电箱dialog
+    handleConfig(item) {
       this.configDialogVisible = true
-      this.configData.collectorID = id
+      this.configData.collectorID = item.collectorID
+      this.configData.name = item.name
     },
-    // 打开删除dialog
-    handleDel(row) {
+    // 打开删除电箱dialog TODO
+    handleDel(item) {
       this.$confirm('此操作将永久删除该电箱, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -243,7 +245,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: item.name + ' 删除成功!'
         })
       }).catch(() => {
         this.$message({
@@ -261,6 +263,9 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)'
       })
       API_getCollector(getToken()).then(response => {
+        if (response.data.code === 12) {
+          this.$message('暂无数据')
+        }
         this.collectorData = response.data.data
         loading.close()
       }).catch(error => {

@@ -6,6 +6,7 @@
       width="100%"
       trigger="manual"
       @show="popShow">
+      <el-button class="addSwPop" icon="el-icon-circle-plus" type="primary" plain size="mini" @click="popAddSwitch(collectorCode)">增加线路</el-button>
       <el-button class="closePop" icon="el-icon-close" size="mini" @click="popClose(collectorCode)"/>
       <el-table :data="gridData" :class="'pop'+collectorCode" max-height="400">
         <el-table-column width="100" property="iconType" label="图标">
@@ -29,31 +30,14 @@
         <!--<el-table-column width="100" property="state" label="state"/>-->
         <el-table-column width="350" label="操作">
           <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.state"
-              :active-value="1"
-              :inactive-value="0"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              @change="onChangeState"/>
-            <el-button
-              size="mini"
-              plain
-              @click="handleEditInfo(scope.$index, scope.row)">
-              <i class="el-icon-edit"/> 编辑
+            <el-switch v-model="scope.row.state" :active-value="1" :inactive-value="0" active-color="#13ce66" inactive-color="#ff4949" @change="onChangeState"/>
+            <el-button size="mini" plain @click="handleEditInfo(scope.$index, scope.row)">
+              <i class="el-icon-edit"/> 修改
             </el-button>
-            <el-button
-              size="mini"
-              plain
-              type="primary"
-              @click="handleDetail(scope.$index, scope.row)">
+            <el-button size="mini" plain type="primary" @click="handleDetail(scope.$index, scope.row)">
               <i class="el-icon-document"/> 查看
             </el-button>
-            <el-button
-              size="mini"
-              plain
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">
+            <el-button size="mini" plain type="danger" @click="handleDelete(scope.$index, scope.row)">
               <i class="el-icon-delete"/> 删除
             </el-button>
           </template>
@@ -61,8 +45,20 @@
       </el-table>
       <el-button slot="reference" icon="el-icon-plus" round @click="popToggle(collectorCode)"/>
     </el-popover>
-    <!-- Form -->
-    <el-dialog :visible.sync="swithcEditVisible" title="修改线路" append-to-body width="600px">
+    <!-- hideForm -->
+    <el-dialog :visible.sync="switchAddVisible" title="增加线路" width="600px">
+      <el-form :model="switchData">
+        <el-form-item label-width="120px" label="线路编码：">
+          <el-input v-model="switchData.code" style="width: 350px;" auto-complete="off"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="switchAddVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addSwitchSubmit">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- hideForm -->
+    <el-dialog :visible.sync="switchEditVisible" title="修改线路" append-to-body width="600px">
       <el-form :model="switchData">
         <el-form-item label-width="120px" label="线路名称">
           <el-input v-model="switchData.name" auto-complete="off" style="width: 370px;"/>
@@ -111,8 +107,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="swithcEditVisible = false">取 消</el-button>
-        <el-button type="primary" @click="onSubmitInfo">确 定</el-button>
+        <el-button @click="switchEditVisible = false">取 消</el-button>
+        <el-button type="primary" @click="switchInfoSubmit">确 定</el-button>
       </div>
     </el-dialog>
     <!-- hideForm -->
@@ -145,11 +141,13 @@ export default {
   data() {
     return {
       gridData: [],
-      swithcEditVisible: false,
-      switchInfoVisible: false,
+      switchAddVisible: false, // 添加dialog可见性
+      switchEditVisible: false, // 修改dialog可见性
+      switchInfoVisible: false, // 线路详情dialog可见性
       onEscClose: true, // 是否允许遮罩和ESC关闭
-      toChildVal: '',
-      switchData: {
+      toChildVal: '', // 传值用
+      switchData: { // 线路表单值
+        code: '',
         name: '',
         icons: ''
       }
@@ -176,6 +174,16 @@ export default {
         console.error(error)
       })
     },
+    // 添加线路提交 TODO
+    addSwitchSubmit() {
+      this.$message('添加线路成功')
+      this.switchAddVisible = false
+    },
+    // 修改线路名称图标提交 TODO
+    switchInfoSubmit() {
+      this.$message('修改成功')
+      this.switchEditVisible = false
+    },
     // 打开线路详细dialog回调
     dialogOpen() {
       const self = this
@@ -191,18 +199,18 @@ export default {
       }, 500)// 等子组件生成再调用resetTabPane
     },
     // 打开、关闭pop层
-    popToggle(id) {
-      this.$refs[`popover-` + id].doToggle()
+    popToggle(collectorCode) {
+      this.$refs[`popover-` + collectorCode].doToggle()
     },
     // 关闭pop层
-    popClose(id) {
-      this.$refs[`popover-` + id].doClose()
+    popClose(collectorCode) {
+      this.$refs[`popover-` + collectorCode].doClose()
     },
     // pop层渲染完成回调
     popShow() {
       this.getSwitch()
     },
-    // 开、关线路
+    // 开、关线路（控制）TODO
     onChangeState(value) {
       console.log('onChangeState ' + value)
       if (value) {
@@ -211,16 +219,21 @@ export default {
         this.$message('关闭')
       }
     },
-    // 修改线路名称、图标
-    onSubmitInfo() {
-      this.$message('修改成功')
-      this.swithcEditVisible = false
+    // 打开添加线路dialog
+    popAddSwitch(collectorCode) {
+      this.switchAddVisible = true
     },
     // 打开修改线路dialog
     handleEditInfo(index, row) {
-      this.swithcEditVisible = true
+      this.switchData.name = row.name
+      this.switchEditVisible = true
     },
-    // 打开删除线路dialog
+    // 打开线路详细dialog
+    handleDetail(index, row) {
+      this.switchInfoVisible = true
+      this.toChildVal = row.code
+    },
+    // 打开删除线路dialog TODO
     handleDelete(index, row) {
       this.$confirm('此操作解除线路绑定, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -229,7 +242,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '解除成功!'
+          message: row.name + ' 解除成功!'
         })
       }).catch(() => {
         this.$message({
@@ -237,11 +250,6 @@ export default {
           message: '已取消解除'
         })
       })
-    },
-    // 打开修改线路详细dialog
-    handleDetail(index, row) {
-      this.switchInfoVisible = true
-      this.toChildVal = row.code
     },
     // 线路图片修改赋值
     iconSelect(val) {
@@ -275,6 +283,9 @@ export default {
 
   .closePop {
     float: right
+  }
+  .addSwPop {
+    float: left
   }
 
   .dialog-footer {

@@ -3,27 +3,15 @@
     <el-tab-pane label="线路详情" name="first">
       <el-row>
         <el-col :span="6">
-          <el-progress
-            :percentage="25"
-            :stroke-width="strokeWidth"
-            :width="circleWidth"
-            type="circle"
-            status="text"
-            color="#8e71c7">当前总功率<p>13kw</p></el-progress>
-          <el-progress
-            :percentage="55"
-            :stroke-width="strokeWidth"
-            :width="circleWidth"
-            type="circle"
-            status="text"
-            color="#00FA9A">电流<p>12A</p></el-progress>
-          <el-progress
-            :percentage="85"
-            :stroke-width="strokeWidth"
-            :width="circleWidth"
-            type="circle"
-            status="text"
-            color="#FFD700">电压<p>15V</p></el-progress>
+          <el-progress :percentage="25" :stroke-width="strokeWidth" :width="circleWidth" type="circle" status="text" color="#8e71c7">
+            当前总功率<p>13kw</p>
+          </el-progress>
+          <el-progress :percentage="55" :stroke-width="strokeWidth" :width="circleWidth" type="circle" status="text" color="#00FA9A">
+            电流<p>12A</p>
+          </el-progress>
+          <el-progress :percentage="85" :stroke-width="strokeWidth" :width="circleWidth" type="circle" status="text" color="#FFD700">
+            电压<p>15V</p>
+          </el-progress>
           <div class="grid-content bg-purple"/>
         </el-col>
         <el-col :span="12">
@@ -84,11 +72,7 @@
       <div class="block">
         <span class="demonstration">过压值</span>
         <p/>
-        <el-slider
-          v-model="guoya"
-          :min="guoyaMin"
-          :max="guotaMax"
-          show-input/>
+        <el-slider v-model="guoya" :min="guoyaMin" :max="guotaMax" show-input/>
       </div>
       <el-button class="cbtn" type="primary" @click="commitSet(2)">确 定</el-button>
     </el-tab-pane>
@@ -96,11 +80,7 @@
       <div class="block">
         <span class="demonstration">欠压值</span>
         <p/>
-        <el-slider
-          v-model="qianya"
-          :min="qianyaMin"
-          :max="qianyaMax"
-          show-input/>
+        <el-slider v-model="qianya" :min="qianyaMin" :max="qianyaMax" show-input/>
       </div>
       <el-button class="cbtn" type="primary" @click="commitSet(3)">确 定</el-button>
     </el-tab-pane>
@@ -128,7 +108,7 @@ export default {
       circleWidth: 120,
       activeName: 'first',
       labelPosition: 'right',
-      formLabelAlign: {
+      formLabelAlign: { // 表单值
         name: '',
         region: '',
         type: ''

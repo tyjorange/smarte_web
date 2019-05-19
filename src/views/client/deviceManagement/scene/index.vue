@@ -7,7 +7,7 @@
       </sticky>
     </div>
     <!-- col_items -->
-    <el-row v-for="item in collectorData" :key="item.id" class="col_items">
+    <el-row v-for="item in sceneDataList" :key="item.id" class="col_items">
       <el-col :span="1" class="col21">
         <!--<SwitchComp :collector-code="item.code"/>-->
       </el-col>
@@ -32,7 +32,7 @@
       <el-col :span="3" class="col28"> <!-- collector is online -->
       </el-col>
       <el-col :span="8" class="col24"> <!-- collector item tools -->
-        <el-button type="primary" icon="el-icon-share" plain @click.native.prevent="switchManager(item.collectorID)">
+        <el-button type="primary" icon="el-icon-set-up" plain @click.native.prevent="switchManager(item.collectorID)">
           关联({{ item.count }})条线路
         </el-button>
         <el-button type="primary" icon="el-icon-tickets" plain @click.native.prevent="sceneAddUpdate(item)">
@@ -41,7 +41,7 @@
         <el-button type="success" icon="el-icon-video-play" plain @click.native.prevent="executeScene">
           执行
         </el-button>
-        <el-button type="danger" icon="el-icon-delete" plain @click.native.prevent="handleDel(item.collectorID)">
+        <el-button type="danger" icon="el-icon-delete" plain @click.native.prevent="handleDel(item)">
           删除
         </el-button>
       </el-col>
@@ -63,17 +63,52 @@
       </div>
     </el-dialog>
     <!-- hideForm -->
-    <el-dialog :visible.sync="configDialogVisible" title="修改场景" width="600px">
+    <el-dialog :visible.sync="configDialogVisible" title="添加/修改场景" width="600px">
       <el-form :model="configData">
-        <el-form-item label-width="120px" label="场景名称：">
-          <el-input v-model="configData.name" auto-complete="off" style="width: 350px"/>
+        <el-form-item label-width="120px" label="场景名称">
+          <el-input v-model="configData.name" auto-complete="off" style="width: 370px"/>
         </el-form-item>
-        <el-form-item label-width="120px" label="图标">
-          <el-select v-model="configData.bote" placeholder="请选择" style="width: 350px">
-            <el-option label="2400bps" value="2400"/>
-            <el-option label="4800bps" value="4800"/>
-            <el-option label="9600bps" value="6900"/>
-          </el-select>
+        <el-form-item label-width="120px" label="场景图标">
+          <el-button plain class="btn1" @click="iconSelect(0)">
+            <img class="images_ebs" src="@/assets/changjing/huijia_cj.png" alt="">
+            <p/>回家
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(1)">
+            <img class="images_ebs" src="@/assets/changjing/lijia_cj.png" alt="">
+            <p/>离家
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(2)">
+            <img class="images_ebs" src="@/assets/changjing/qichuang_cj.png" alt="">
+            <p/>起床
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(3)">
+            <img class="images_ebs" src="@/assets/changjing/shuijiao_cj.png" alt="">
+            <p/>睡觉
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(4)">
+            <img class="images_ebs" src="@/assets/changjing/kaideng_cj.png" alt="">
+            <p/>开灯
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(5)">
+            <img class="images_ebs" src="@/assets/changjing/guandeng_cj.png" alt="">
+            <p/>关灯
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(6)">
+            <img class="images_ebs" src="@/assets/changjing/juhui_cj.png" alt="">
+            <p/>聚会
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(7)">
+            <img class="images_ebs" src="@/assets/changjing/youxi_cj.png" alt="">
+            <p/>游戏
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(8)">
+            <img class="images_ebs" src="@/assets/changjing/xiuxian_cj.png" alt="">
+            <p/>休闲
+          </el-button>
+          <el-button plain class="btn1" @click="iconSelect(9)">
+            <img class="images_ebs" src="@/assets/changjing/gengduo_cj.png" alt="">
+            <p/>其他
+          </el-button>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -104,7 +139,7 @@ export default {
           pinyin: pinyin[index]
         })
       })
-      console.log(data)// 服务器转来的数据转成的el-transfer所需格式
+      console.log(data)// 服务器转来的数据转成的el-transfer所需格式 TODO
       return data
     }
     return {
@@ -112,11 +147,11 @@ export default {
         name: '',
         iconType: ''
       },
-      switchDialogVisible: false,
-      configDialogVisible: false,
-      collectorData: [],
-      shareList: generateUserListData(),
-      shareData: []
+      switchDialogVisible: false, // 场景下线路管理dialog可见性
+      configDialogVisible: false, // 场景名称图片dialog可见性
+      sceneDataList: [], // 从服务器获取的场景列表
+      shareList: generateUserListData(), // 从服务器获取的电箱列表（不含分享来的）
+      shareData: [] // 勾选的电箱列表（key list）
     }
   },
   mounted() {
@@ -137,27 +172,27 @@ export default {
       //   console.error(error)
       // })
     },
-    // 场景线路提交 TODO
+    // 场景关联的线路提交 TODO
     sceneSwitchSubmit() {
       console.log(this.shareData)
       this.switchDialogVisible = false
     },
-    // 场景下的线路管理dialog
+    // 打开场景下的线路管理dialog
     switchManager(id) {
       this.switchDialogVisible = true
       this.configData.collectorID = id
     },
-    // 修改场景名称图标dialog
+    // 打开修改场景dialog
     sceneAddUpdate(item) {
       this.configData.name = item.name
       this.configDialogVisible = true
     },
-    // 执行场景
+    // 执行场景 TODO
     executeScene() {
       this.$message('execute')
     },
-    // 打开删除dialog
-    handleDel(row) {
+    // 打开删除场景dialog TODO
+    handleDel(item) {
       this.$confirm('此操作将永久删除该场景, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -165,7 +200,7 @@ export default {
       }).then(() => {
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: item.name + ' 删除成功!'
         })
       }).catch(() => {
         this.$message({
@@ -183,7 +218,10 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)'
       })
       API_getScene(getToken()).then(response => {
-        this.collectorData = response.data.data
+        if (response.data.code === 12) {
+          this.$message('暂无数据')
+        }
+        this.sceneDataList = response.data.data
         loading.close()
       }).catch(error => {
         loading.close()
@@ -204,6 +242,11 @@ export default {
     // 分享dialog的自定义搜索方法
     filterMethod(query, item) {
       return item.pinyin.indexOf(query) > -1
+    },
+    // 场景图片修改赋值
+    iconSelect(val) {
+      console.log(val)
+      this.configData.iconType = val
     }
   }
 }
@@ -291,5 +334,11 @@ export default {
     border-radius: 10px;
     height: 25px;
     width: 25px;
+  }
+
+  .btn1 {
+    width: 90px;
+    margin-left: 0;
+    margin-bottom: 5px;
   }
 </style>

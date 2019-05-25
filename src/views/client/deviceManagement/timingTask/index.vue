@@ -13,10 +13,10 @@
           <el-tag size="medium">{{ scope.row.cmd }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="重复" width="180">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px">{{ scope.row.repeat }}</span>
-        </template>
+      <el-table-column :formatter="repeatFormatter" label="重复" width="180">
+        <!--<template slot-scope="scope">-->
+        <!--<span style="margin-left: 10px">{{ scope.row.repeat }}</span>-->
+        <!--</template>-->
       </el-table-column>
       <el-table-column label="启用状态" width="180">
         <template slot-scope="scope">
@@ -37,7 +37,7 @@
       </el-table-column>
     </el-table>
     <!-- -->
-    <el-dialog :visible.sync="timerDialogVisible" title="添加/修改定时任务" width="600px">
+    <el-dialog :visible.sync="timerDialogVisible" title="添加/修改定时任务" width="700px">
       <el-form :model="configData">
         <el-form-item label-width="120px" label="执行时间:">
           <el-time-picker v-model="configData.timeValue" placeholder="请选择执行时间点" value-format="HH:mm:ss"/>
@@ -58,7 +58,7 @@
         </el-form-item>
         <el-form-item label-width="120px" label="重复|每周:">
           <el-checkbox-group ref="mygroup" v-model="checkboxGroup1" @change="handleChange">
-            <el-checkbox-button v-for="day in weekday" :label="day" :key="day.name" :checked="day.checked">{{ day.name }}</el-checkbox-button>
+            <el-checkbox-button v-for="day in weekday" :label="day" :key="day.name" :checked="day.checked">{{ day.name }}</el-checkbox-button>0
           </el-checkbox-group>
         </el-form-item>
       </el-form>
@@ -74,13 +74,15 @@
 <script>
 // import Vue from 'vue'
 // const dayOptions = ['日', '一', '二', '三', '四', '五', '六']
-const dayOptions = [{ name: '7', checked: false },
-  { name: '1', checked: false },
-  { name: '2', checked: false },
-  { name: '3', checked: false },
-  { name: '4', checked: false },
-  { name: '5', checked: false },
-  { name: '6', checked: false }]
+const dayOptions = [
+  { name: '周日' },
+  { name: '周一' },
+  { name: '周二' },
+  { name: '周三' },
+  { name: '周四' },
+  { name: '周五' },
+  { name: '周六' }
+]
 export default {
   data() {
     return {
@@ -153,6 +155,10 @@ export default {
     },
     handleChange() {
       console.log(this.checkboxGroup1)
+    },
+    repeatFormatter(row, column, cellValue, index) {
+      console.log(row.repeat, cellValue, column, index)
+      return '<el-tag>标签一</el-tag>'
     }
   }
 }

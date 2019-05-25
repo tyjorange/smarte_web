@@ -7,9 +7,9 @@ export function API_getScene(userkey) {
     params: { userkey }
   })
 }
-export function API_getCollector(userkey) {
+export function API_getSwitchByUser(userkey) {
   return request({
-    url: '/AppClientAction_getCollector.do',
+    url: '/AppClientAction_getSwitchByUser.do',
     method: 'get',
     params: { userkey }
   })

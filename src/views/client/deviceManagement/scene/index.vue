@@ -125,7 +125,7 @@
 import Sticky from '@/components/Sticky'
 import treeTransfer from 'el-tree-transfer'
 import { getToken } from '@/utils/auth'
-import { API_getScene } from './api.js'
+import { API_getScene, API_getSwitchByUser } from './api.js'
 export default {
   name: 'Scene',
   components: { Sticky, treeTransfer },
@@ -222,6 +222,7 @@ export default {
     },
     // 打开场景下的线路管理dialog
     switchManager(id) {
+      this.getSwitchByUser()
       this.switchDialogVisible = true
       this.configData.collectorID = id
     },
@@ -268,6 +269,17 @@ export default {
         loading.close()
       }).catch(error => {
         loading.close()
+        console.error(error)
+      })
+    },
+    // 获取用户线路
+    getSwitchByUser() {
+      API_getSwitchByUser(getToken()).then(response => {
+        if (response.data.code === 12) {
+          this.$message('暂无数据')
+        }
+        console.log(response.data.data)
+      }).catch(error => {
         console.error(error)
       })
     },
